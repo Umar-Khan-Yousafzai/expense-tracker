@@ -2,7 +2,7 @@
     <!-- HEADER -->
     @include('partials.header', ['title' => 'View Expenses'])
 
-    <x-card>
+    <x-card class="shadow-xl">
         <x-table :headers="$headers" :rows="$expenses" with-pagination>
 
             <!-- Description -->
@@ -115,4 +115,15 @@
             <x-button label="Close" @click="$wire.showModal = false" />
         </x-slot:actions>
     </x-modal>
+
+
+    <x-modal wire:model="showDeleteModal" title="Confirm Delete" class="backdrop-blur">
+        <div class="font-medium truncate"> Are You sure You want to Delete Expense?
+        </div>
+        <x-slot:actions>
+            <x-button label="Delete" class="btn-error"  wire:click='delete({{ $expenseId }})' />
+            <x-button label="Cancel" class="btn-warning" @click="$wire.showDeleteModal = false" />
+        </x-slot:actions>
+    </x-modal>
+
 </div>

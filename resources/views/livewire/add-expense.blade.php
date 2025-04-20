@@ -4,10 +4,11 @@
 
     <!-- Content  -->
     <x-form wire:submit="save" class="p-4">
+        <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />
         <x-card title="Gathering / Party Expense Information"
             subtitle="Manage Expenses Between Friends (Organizing Parties) / Gatherings" shadow separator>
             <!-- Category + Total Amount -->
-            <x-card>
+            <x-card class="shadow-xl">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <x-choices-offline label="Expense Category" wire:model="selectedCategory" :options="$categories"
