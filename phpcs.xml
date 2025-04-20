@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<ruleset name="CustomStandard">
+	<description>Custom laravel coding standard.</description>
+	<rule ref="PEAR">
+		<exclude name="PEAR.Commenting.FileComment.Missing" />
+		<exclude name="PEAR.Commenting.ClassComment.MissingPackageTag" />
+		<exclude name="PEAR.Commenting.ClassComment.MissingAuthorTag" />
+		<exclude name="PEAR.Commenting.ClassComment.MissingLicenseTag" />
+		<exclude name="PEAR.Commenting.ClassComment.MissingLinkTag" />
+        <exclude name="PEAR.NamingConventions.ValidFunctionName.PrivateNoUnderscore" />
+		<exclude name="PEAR.Commenting.ClassComment.MissingCategoryTag" />
+		<exclude name="PEAR.NamingConventions.ValidVariableName.PrivateNoUnderscore" />
+		<exclude name="PEAR.Commenting.FunctionComment.MissingParamComment" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.MultipleArguments" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.ContentAfterOpenBracket" />
+        <exclude name="PEAR.Functions.FunctionCallSignature.CloseBracketLine" />
+	</rule>
+    <!-- Reference the Generic coding standard -->
+    <rule ref="Generic">
+        <!-- Exclude the MissingShort rule from DocComment -->
+        <exclude name="Generic.Formatting.SpaceBeforeCast.NoSpace" />
+        <exclude name="Generic.Commenting.DocComment.MissingShort" />
+        <exclude name="Generic.Commenting.DocComment.NonParamGroup" />
+        <exclude name="Generic.WhiteSpace.DisallowSpaceIndent.SpacesUsed" />
+        <exclude name="Generic.PHP.UpperCaseConstant.Found" />
+        <exclude name="Generic.Arrays.DisallowShortArraySyntax.Found" />
+        <exclude name="Generic.Classes.OpeningBraceSameLine.BraceOnNewLine" />
+        <exclude name="Generic.Files.LowercasedFilename.NotFound" />
+        <exclude name="Generic.PHP.ClosingPHPTag.NotFound" />
+        <exclude name="Generic.PHP.RequireStrictTypes.MissingDeclaration" />
+        <exclude name="Generic.Functions.OpeningFunctionBraceBsdAllman.BraceOnSameLine" />
+        <exclude name="Generic.Functions.OpeningFunctionBraceKernighanRitchie.BraceOnNewLine" />
+        <exclude name="Generic.Formatting.NoSpaceAfterCast.SpaceFound"/>
+        <exclude name="Generic.Files.EndFileNoNewline.Found" />
+        <exclude name="Generic.Formatting.SpaceAfterNot.Incorrect" />
+        <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
+        <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
+        <exclude name="Generic.PHP.ForbiddenFunctions.Found" />
+        <exclude name="Generic.NamingConventions.ConstructorName.OldStyle"/>
+        <rule ref="PSR12.Files.OpenTag" />
+		<rule ref="Generic.Formatting.MultipleStatementAlignment" />
+		<rule ref="Generic.Arrays.DisallowLongArraySyntax" />
+		<rule ref="Generic.Commenting.Todo" />
+		<rule ref="Generic.ControlStructures.DisallowYodaConditions" />
+		<rule ref="Generic.ControlStructures.InlineControlStructure" />
+		<rule ref="Generic.NamingConventions.ConstructorName" />
+		<rule ref="Generic.PHP.DeprecatedFunctions" />
+		<rule ref="Generic.PHP.LowerCaseKeyword" />
+		<rule ref="Generic.WhiteSpace.IncrementDecrementSpacing" />
+		<rule ref="Generic.Formatting.MultipleStatementAlignment" />
+		<rule ref="Generic.NamingConventions.UpperCaseConstantName" />
+		<rule ref="Generic.WhiteSpace.ScopeIndent" />
+		<rule ref="Generic.Strings.UnnecessaryStringConcat" />
+		<rule ref="Generic.Functions.FunctionCallArgumentSpacing" />
+		<rule ref="Generic.NamingConventions.UpperCaseConstantName" />
+		<rule ref="Generic.Files.EndFileNewline" />
+    </rule>
+
+	<rule ref="Squiz">
+		    <exclude name="Squiz.Operators.ComparisonOperatorUsage.ImplicitTrue"/>
+			<exclude name="Squiz.PHP.DisallowInlineIf.Found" />
+            <exclude name="Squiz.PHP.DisallowMultipleAssignments.Found"/>
+			<exclude name="Squiz.WhiteSpace.FunctionSpacing.BeforeFirst" />
+			<exclude name="Squiz.Commenting.FileComment.Missing" />
+			<exclude name="Squiz.Commenting.ClassComment.MissingPackageTag" />
+			<exclude name="Squiz.Commenting.ClassComment.MissingAuthorTag" />
+			<exclude name="Squiz.Commenting.ClassComment.MissingLinkTag" />
+			<exclude name="Squiz.Commenting.FileComment.MissingFileDocComment" />
+			<exclude name="Squiz.Files.FileExtension.ClassFound" />
+			<exclude name="Squiz.Classes.ClassFileName.NoMatch" />
+			<exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedComparison" />
+			<exclude name="Squiz.ControlStructures.InlineIfDeclaration.NoBrackets" />
+			<exclude name="Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps" />
+			<exclude name="Squiz.Commenting.ClosingDeclarationComment.Misplaced" />
+			<exclude name="Squiz.WhiteSpace.FunctionClosingBraceSpace.SpacingBeforeClose" />
+			<exclude name="Squiz.Commenting.BlockComment.WrongStart" />
+			<exclude name="Squiz.Commenting.InlineComment.DocBlock" />
+            <exclude name="Squiz.Formatting.OperatorBracket.MissingBrackets"/>
+            <exclude name="Squiz.WhiteSpace.OperatorSpacing.NoSpaceAfter"/>
+            <exclude name="Squiz.PHP.DisallowComparisonAssignment.AssignedBool"/>
+            <exclude name="Squiz.PHP.DisallowBooleanStatement.Found" />
+            <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar" />
+            <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment" />
+            <exclude name="Squiz.ControlStructures.InlineIfDeclaration.SpacingBeforeThen"/>
+            <exclude name="Squiz.WhiteSpace.OperatorSpacing.NoSpaceBefore"/>
+            <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
+            <exclude name="Squiz.Operators.ComparisonOperatorUsage.NotAllowed"/>
+            <exclude name="Squiz.Objects.ObjectInstantiation.NotAssigned"/>
+            <exclude name="Squiz.Commenting.ClassComment.TagNotAllowed"/>
+            <rule ref="Squiz.Functions.FunctionDeclaration" />
+			<rule ref="Squiz.Commenting.ClosingDeclarationComment" />
+			<rule ref="Squiz.Commenting.DocCommentAlignment" />
+			<rule ref="Squiz.Commenting.InlineComment" />
+			<rule ref="Squiz.Commenting.LongConditionClosingComment" />
+			<rule ref="Squiz.ControlStructures.ControlSignature" />
+			<rule ref="Squiz.Formatting.OperatorBracket" />
+			<rule ref="Squiz.Operators.ComparisonOperatorUsage" />
+			<rule ref="Squiz.Scope.MethodScope" />
+			<rule ref="Squiz.Strings.ConcatenationSpacing" />
+			<rule ref="Squiz.WhiteSpace.FunctionSpacing" />
+			<rule ref="Squiz.WhiteSpace.MemberVarSpacing" />
+			<rule ref="Squiz.Commenting.VariableComment" />
+			<rule ref="Squiz.Commenting.BlockComment" />
+			<rule ref="Squiz.Commenting.EmptyCatchComment" />
+			<rule ref="Squiz.Commenting.PostStatementComment" />
+			<rule ref="Squiz.ControlStructures.ElseIfDeclaration" />
+			<rule ref="Squiz.Commenting.FunctionComment" />
+			<rule ref="Squiz.ControlStructures.ControlSignature" />
+			<rule ref="Squiz.WhiteSpace.ScopeClosingBrace" />
+			<rule ref="Squiz.WhiteSpace.CastSpacing" />
+			<rule ref="Squiz.WhiteSpace.FunctionClosingBraceSpace" />
+			<rule ref="Squiz.Commenting.VariableComment" />
+			<rule ref="Squiz.WhiteSpace.ControlStructureSpacing" />
+			<rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing" />
+			<rule ref="Squiz.WhiteSpace.OperatorSpacing" />
+			<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+			<rule ref="Squiz.Functions.FunctionDeclaration" />
+			<rule ref="Squiz.Functions.FunctionDeclarationArgumentSpacing" /></rule>
+		<rule ref="Generic.Files.LineLength">
+			<properties>
+				<property name="lineLimit" value="150" />
+				<property name="absoluteLineLimit" value="0" />
+			</properties>
+		</rule>
+		<rule ref="PSR2.Classes.PropertyDeclaration" />
+		<rule ref="PSR2.Files.ClosingTag" />
+	</ruleset>
