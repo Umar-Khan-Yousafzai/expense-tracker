@@ -6,13 +6,14 @@ use App\Models\Expense;
 use App\Services\ExpenseService;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Mary\Traits\Toast;
 
 /**
  * ViewExpenses
  */
 class ViewExpenses extends Component
 {
-    use WithPagination;
+    use WithPagination, Toast;
 
     /**
      * The showModal flag.
@@ -35,6 +36,25 @@ class ViewExpenses extends Component
      */
     public $selectedExpense = null;
 
+    /**
+     * The showDeleteModal flag.
+     *
+     * @var boolean
+     */
+    public $showDeleteModal = false;
+
+    /**
+     * The selected expense Id .
+     *
+     * @var integer
+     */
+    public int $expenseId;
+
+    /**
+     * The headers for the table.
+     *
+     * @var array
+     */
     public $headers = [
         [
             'key'   => 'id',
@@ -122,6 +142,38 @@ class ViewExpenses extends Component
         $this->selectedExpense = Expense::with(['unsettledDebts.borrower', 'unsettledDebts.lender'])->find($expenseId);
         $this->showModal       = true;
     }//end showDebts()
+
+
+    /**
+     * Delete the selected expense.
+     *
+     * @param  integer $expenseId
+     * @return void
+     */
+    public function delete(int $expenseId)
+    {
+        $expense               = $this->expenseService->deleteExpense($expenseId);
+        $this->showDeleteModal = false;
+        if ($expense) {
+            $this->success(title: 'Success!', description:'Expense deleted successfully');
+        } else {
+            $this->error('Error!', 'Failed to delete expense.');
+        }
+    }//end delete()
+
+
+    /**
+     * Show the delete confirmation modal.
+     *
+     * @param  integer $expenseId
+     * @return void
+     */
+    public function confirmDelete(int $expenseId)
+    {
+        $this->expenseId       = $expenseId;
+        $this->showDeleteModal = true;
+
+    }//end confirmDelete()
 
 
 }//end class

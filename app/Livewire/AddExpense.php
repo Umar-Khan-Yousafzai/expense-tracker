@@ -68,13 +68,6 @@ class AddExpense extends Component
      *
      * @var array
      */
-    public $selectedUsersWhoPaidExpense = [];
-
-    /**
-     * The array of users who paid the expense.
-     *
-     * @var array
-     */
     public $expenseSharedWith = [];
 
     /**
@@ -133,37 +126,33 @@ class AddExpense extends Component
     public function rules()
     {
         return [
-            'selectedCategory'              => [
+            'selectedCategory'    => [
                 'required',
                 'integer',
                 'exists:expense_categories,id',
             ],
-            'amount'                        => [
+            'amount'              => [
                 'required',
                 'numeric',
                 'min:1',
             ],
-            'dateTimePaidAt'                => [
+            'dateTimePaidAt'      => [
                 'required',
                 'date',
             ],
-            'expenseSharedWith'             => [
+            'expenseSharedWith'   => [
                 'required',
                 'array',
                 'min:1',
             ],
-            'expenseSharedWith.*'           => [
+            'expenseSharedWith.*' => [
                 'integer',
                 'exists:users,id',
             ],
-            'selectedUsersWhoPaidExpense'   => [
+            'payers'              => [
                 'required',
                 'array',
                 'min:1',
-            ],
-            'selectedUsersWhoPaidExpense.*' => [
-                'integer',
-                'exists:users,id',
             ],
         ];
     }//end rules()
@@ -250,11 +239,11 @@ class AddExpense extends Component
             'shared_with'         => $this->expenseSharedWith,
         ];
          $this->expenseService->createExpense(data:$data);
-         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt', 'expenseSharedWith', 'selectedUsersWhoPaidExpense']);
+         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt', 'expenseSharedWith', ]);
         $this->success(
             'Expense added successfully!',
             'Please check your shares now',
-            redirectTo: route('dashboard'),
+            redirectTo: route(name: 'view.expenses'),
         );
 
     }//end save()
