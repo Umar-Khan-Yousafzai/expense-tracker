@@ -16,11 +16,13 @@ return new class extends Migration
             $table->foreignId('expense_id')->constrained()->onDelete('cascade');
             $table->foreignId('lender_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('borrower_id')->constrained('users')->onDelete('cascade');
-            $table->decimal('amount', 10, 2); // e.g., Ahmed owes Umer 266.67 RS
+            $table->decimal('amount', 10, 2);
             $table->boolean('is_settled')->default(false);
             $table->timestamps();
+            $table->softDeletes();
         });
-    }
+    }//end up()
+
 
     /**
      * Reverse the migrations.
@@ -28,5 +30,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('debts');
-    }
+    }//end down()
+
+
 };

@@ -4,6 +4,7 @@ namespace App\Livewire;
 
 use App\Services\ExpenseService;
 use App\Services\UserService;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 use Mary\Traits\Toast;
 
@@ -78,14 +79,24 @@ class AddExpense extends Component
     public $fetchedUsers = [];
 
     /**
+     * Expense Description.
+     *
+     * @var mixed
+     */
+    #[Validate('max:100')]
+    public $expenseDescription;
+
+    /**
      * The array of payers.
      *
      * @var array
      */
     public $payers = [
         [
-            'user_id' => null,
-            'amount'  => 0,
+            'user_id'            => null,
+            'amount'             => 0,
+            'exclude_from_share' => false,
+            'role'               => 'payer',
         ],
     ];
 
@@ -98,8 +109,10 @@ class AddExpense extends Component
     public function addPayer()
     {
         $this->payers[] = [
-            'user_id' => null,
-            'amount'  => 0,
+            'user_id'            => null,
+            'amount'             => 0,
+            'exclude_from_share' => false,
+            'role'               => 'payer',
         ];
     }//end addPayer()
 
@@ -126,34 +139,51 @@ class AddExpense extends Component
     public function rules()
     {
         return [
-            'selectedCategory'    => [
+            'selectedCategory'            => [
                 'required',
                 'integer',
                 'exists:expense_categories,id',
             ],
-            'amount'              => [
+            'amount'                      => [
                 'required',
                 'numeric',
                 'min:1',
             ],
-            'dateTimePaidAt'      => [
+            'dateTimePaidAt'              => [
                 'required',
                 'date',
             ],
-            'expenseSharedWith'   => [
+            'expenseSharedWith'           => [
                 'required',
                 'array',
                 'min:1',
             ],
-            'expenseSharedWith.*' => [
+            'expenseSharedWith.*'         => [
                 'integer',
                 'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    $payerIds = array_column($this->payers ?? [], 'user_id');
+                    if (in_array($value, $payerIds)) {
+                        $fail('A person who is paying both payers and shared list.');
+                    }
+                },
             ],
-            'payers'              => [
+            'payers'                      => [
                 'required',
                 'array',
                 'min:1',
             ],
+            'payers.*.user_id'            => [
+                'required',
+                'exists:users,id',
+                function ($attribute, $value, $fail) {
+                    if (in_array($value, $this->expenseSharedWith ?? [])) {
+                        $fail('A person in Payer list cannot be in shared list.');
+                    }
+                },
+            ],
+            'payers.*.amount'             => 'required|numeric|min:0.01',
+            'payers.*.exclude_from_share' => 'boolean',
         ];
     }//end rules()
 
@@ -218,13 +248,23 @@ class AddExpense extends Component
     public function save()
     {
         $this->validate();
-
         $totalPaid = collect($this->payers)->sum('amount');
         if (abs($totalPaid - $this->amount) > 0.01) {
             $this->addError('amount', 'Sum of individual payments must match the total amount.');
             return;
         }
 
+        foreach ($this->expenseSharedWith as $key => $value) {
+            $this->expenseSharedWith[$key] = [
+                'user_id'            => $value,
+                'role'               => 'participant',
+                'amount'             => 0,
+                'exclude_from_share' => false,
+            ];
+        }
+
+        $totalPeople = array_merge($this->payers, $this->expenseSharedWith);
+        logger($totalPeople);
         /**
          * @disregard
          */
@@ -234,12 +274,11 @@ class AddExpense extends Component
             'total_amount'        => $this->amount,
             'description'         => $this->description,
             'paid_at'             => $this->dateTimePaidAt,
-            'paid_by'             => collect($this->payers)->pluck('user_id')->toArray(),
-            'paid_amounts'        => collect($this->payers)->pluck('amount', 'user_id')->toArray(),
-            'shared_with'         => $this->expenseSharedWith,
+            'total_people'        => $totalPeople,
+
         ];
          $this->expenseService->createExpense(data:$data);
-         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt', 'expenseSharedWith', ]);
+         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt', 'expenseSharedWith' ]);
         $this->success(
             'Expense added successfully!',
             'Please check your shares now',

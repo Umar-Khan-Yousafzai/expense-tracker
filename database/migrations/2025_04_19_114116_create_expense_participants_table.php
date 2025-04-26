@@ -18,12 +18,14 @@ return new class extends Migration
             $table->unsignedBigInteger('expense_id');
             $table->unsignedBigInteger('user_id');
             $table->enum('role', ['payer', 'participant']);
+            $table->boolean('exclude_from_share')->default(false);
             $table->decimal('amount', 10, 2)->default(0.00);
             $table->decimal('amount_paid', 10, 2)->default(0.00);
             $table->timestamps();
             $table->foreign('expense_id')->references('id')->on('expenses')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->unique(['expense_id', 'user_id']);
+            $table->softDeletes();
         });
     }//end up()
 

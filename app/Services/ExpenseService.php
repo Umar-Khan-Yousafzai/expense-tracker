@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Debt;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
+use App\Models\ExpenseParticipant;
 use DB;
 
 /**
@@ -84,7 +85,6 @@ class ExpenseService
     public function createExpense(array $data): Expense
     {
         return DB::transaction(function () use ($data) {
-            // Create the expense
             $expense = $this->expenseModel->create([
                 'user_id'             => $data['user_id'],
                 'expense_category_id' => $data['expense_category_id'],
@@ -93,49 +93,54 @@ class ExpenseService
                 'paid_at'             => $data['paid_at'],
             ]);
 
-            // Get all participants (payers + shared_with)
-            $allParticipants = array_unique(array_merge(
-                $data['paid_by'],
-                $data['shared_with']
-            ));
+            // Get only participants who should share the cost (not excluded)
+            $sharingParticipants = array_filter($data['total_people'], function ($person) {
+                return !$person['exclude_from_share'];
+            });
 
-            $sharePerPerson = $data['total_amount'] / count($allParticipants);
+            $sharePerPerson = $data['total_amount'] / count($sharingParticipants);
 
-            // Attach all participants first with their shares
-            foreach ($allParticipants as $userId) {
-                $expense->participants()->attach($userId, [
-                    'role'   => in_array($userId, $data['paid_by']) ? 'payer' : 'participant',
-                    'amount' => $sharePerPerson,
+            // Attach all participants
+            foreach ($data['total_people'] as $participant) {
+                $expense->participants()->attach($participant['user_id'], [
+                    'role'               => $participant['role'],
+                    'amount'             => $participant['exclude_from_share'] ? 0 : $sharePerPerson,
+                    'amount_paid'        => $participant['role'] === 'payer' ? $participant['amount'] : 0,
+                    'exclude_from_share' => $participant['exclude_from_share'],
                 ]);
             }
 
-            // Attach actual payments from payers
-            foreach ($data['paid_by'] as $userId) {
-                $expense->participants()->updateExistingPivot($userId, [
-                    'amount_paid' => $data['paid_amounts'][$userId] ?? 0,
-                ]);
-            }
-
-            // Calculate net debts
             $this->calculateNetDebts($expense, $sharePerPerson);
-
             return $expense;
         });
     }//end createExpense()
 
 
+    /**
+     * Calculate Net Debts.
+     *
+     * @param  Expense $expense
+     * @param  float   $sharePerPerson
+     * @return void
+     */
     protected function calculateNetDebts(Expense $expense, float $sharePerPerson): void
     {
-        $participants = $expense->participants()->withPivot(['amount_paid', 'amount'])->get();
+        $participants = $expense->participants()->withPivot(['amount_paid', 'amount', 'exclude_from_share'])->get();
 
-        // Calculate net balances
         $balances = [];
+
+        // Calculate net balances (only for sharing participants)
         foreach ($participants as $participant) {
-            $paid = $participant->pivot->amount_paid ?? 0;
-            $balances[$participant->id] = $paid - $sharePerPerson;
+            if (!$participant->pivot->exclude_from_share) {
+                $paid = $participant->pivot->amount_paid ?? 0;
+                $balances[$participant->id] = $paid - $sharePerPerson;
+            } else {
+                // For excluded payers, they only have what they paid
+                $balances[$participant->id] = $participant->pivot->amount_paid ?? 0;
+            }
         }
 
-        // Create debts only for net amounts
+        // Create debts
         foreach ($balances as $borrowerId => $borrowerBalance) {
             if ($borrowerBalance < 0) {
                 foreach ($balances as $lenderId => $lenderBalance) {
@@ -170,8 +175,19 @@ class ExpenseService
     public function deleteExpense(int $id): bool
     {
         $expense = $this->expenseModel->find($id);
+
         if ($expense) {
-            return $expense->delete();
+            $expParticipants = ExpenseParticipant::where('expense_id')->get();
+            $expenseDebts    = Debt::where('expense_id', $expense->id)->get();
+            foreach ($expParticipants as $key => $value) {
+                $value->forceDelete();
+            }
+
+            foreach ($expenseDebts as $value) {
+                $value->forceDelete();
+            }
+
+            return $expense->forceDelete();
         }
 
         return false;
@@ -208,6 +224,49 @@ class ExpenseService
             'unsettledDebts.borrower'
         ])->latest()->paginate(10);
     }//end getAllExpensesWithParticipants()
+
+
+    public function updateExpense(Expense $expense, array $data): Expense
+    {
+
+        return DB::transaction(function () use ($expense, $data) {
+            // 1. First delete all existing debts for this expense
+            Debt::where('expense_id', $expense->id)->delete();
+
+            // 2. Update the expense details
+            $expense->update([
+                'expense_category_id' => $data['expense_category_id'],
+                'total_amount'        => $data['total_amount'],
+                'description'         => $data['description'],
+                'paid_at'             => $data['paid_at'],
+            ]);
+
+            // 3. Calculate new sharing logic
+            $sharingParticipants = array_filter($data['total_people'], function ($person) {
+                return !($person['exclude_from_share'] ?? false);
+            });
+
+            $sharePerPerson = $data['total_amount'] / max(1, count($sharingParticipants));
+
+            // 4. Sync participants with updated amounts
+            $participants = [];
+            foreach ($data['total_people'] as $person) {
+                $participants[$person['user_id']] = [
+                    'role'               => $person['role'],
+                    'amount'             => $person['exclude_from_share'] ?? false ? 0 : $sharePerPerson,
+                    'amount_paid'        => $person['role'] === 'payer' ? ($person['amount'] ?? 0) : 0,
+                    'exclude_from_share' => $person['exclude_from_share'] ?? false,
+                ];
+            }
+
+            $expense->participants()->sync($participants);
+
+            // 5. Calculate fresh debts (now without duplicates)
+            $this->calculateNetDebts($expense, $sharePerPerson);
+
+            return $expense;
+        });
+    }//end updateExpense()
 
 
 }//end class

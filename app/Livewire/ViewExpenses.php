@@ -62,6 +62,11 @@ class ViewExpenses extends Component
             'class' => 'w-1',
         ],
         [
+            'key'   => 'paid_at',
+            'label' => 'date',
+            'class' => 'w-1',
+        ],
+        [
             'key'   => 'description',
             'label' => 'Description',
         ],
@@ -174,6 +179,30 @@ class ViewExpenses extends Component
         $this->showDeleteModal = true;
 
     }//end confirmDelete()
+
+
+    /**
+     * This is edit expense function
+     *
+     * @param  integer $expenseId
+     * @return void
+     */
+    public function editExpense(int $expenseId)
+    {
+        redirect(route('edit.expense', $expenseId));
+    }//end editExpense()
+
+
+        /**
+         * This is edit expense function
+         *
+         * @param  integer $expenseId
+         * @return void
+         */
+    public function viewExpense(int $expenseId)
+    {
+        redirect(route('view.expense', $expenseId));
+    }//end viewExpense()
 
 
 }//end class

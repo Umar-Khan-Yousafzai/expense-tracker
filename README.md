@@ -80,7 +80,17 @@ We welcome contributions! Follow these steps to contribute:
 ## Versioning
 
 This project adheres to [Semantic Versioning](https://semver.org/).  
-**Current Version**: `v1.0.0`
+**Current Version**: `v1.1.0`
+
+
+## Version History
+
+| Version   | Release Date   | Changes                                                                 |
+|-----------|----------------|-------------------------------------------------------------------------|
+| **v1.0.0** | `2025-04-20`  | Initial release with basic expense tracking features.                   |
+| **v1.1.0** | `2025-04-25`  | Added user-friendly interface improvements and bug fixes.               |
+
+Stay tuned for future updates!
 
 ---
 

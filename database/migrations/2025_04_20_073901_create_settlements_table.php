@@ -18,8 +18,10 @@ return new class extends Migration
             $table->decimal('amount', 10, 2);
             $table->date('settled_at');
             $table->timestamps();
+            $table->softDeletes();
         });
-    }
+    }//end up()
+
 
     /**
      * Reverse the migrations.
@@ -27,5 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('settlements');
-    }
+    }//end down()
+
+
 };
