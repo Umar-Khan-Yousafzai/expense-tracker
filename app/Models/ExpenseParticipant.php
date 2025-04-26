@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * ExpenseParticipant
  */
 class ExpenseParticipant extends Model
 {
+    use SoftDeletes;
 
     /**
      * The table associated with the model.
@@ -20,6 +22,7 @@ class ExpenseParticipant extends Model
         'user_id',
         'role',
         'amount',
+        'exclude_from_share',
         'amount_paid',
     ];
 

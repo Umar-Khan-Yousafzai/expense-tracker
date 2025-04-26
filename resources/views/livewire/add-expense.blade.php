@@ -42,19 +42,31 @@
 
                     <!-- Dynamic Payers List -->
                     @foreach($payers as $index => $payer)
-                    <div class="grid grid-cols-3 gap-4 items-end">
-                        <div class="col-span-2">
+                    <div class="grid grid-cols-12 gap-4 items-end">
+                        <!-- Payer Selection -->
+                        <div class="col-span-5">
                             <x-choices-offline wire:model="payers.{{$index}}.user_id" :options="$fetchedUsers"
-                                placeholder="Select payer..." single searchable
-                                error-field="paid_by_and_shared_with_error" />
+                                placeholder="Select payer..." single searchable>
+                            </x-choices-offline>
                         </div>
-                        <div>
+
+                        <!-- Amount Paid -->
+                        <div class="col-span-3">
                             <x-input wire:model="payers.{{$index}}.amount" prefix="RS" placeholder="Amount paid"
                                 money />
                         </div>
+
+                        <div class="col-span-3">
+                            <x-checkbox wire:model="payers.{{$index}}.exclude_from_share" label="Exclude in Share"
+                                class="checkbox-sm" />
+                        </div>
+
+                        <!-- Remove Button -->
                         @if($index > 0)
-                        <x-button wire:click="removePayer({{$index}})" icon="o-trash"
-                            class="btn-ghost btn-sm text-error" />
+                        <div class="col-span-1">
+                            <x-button wire:click="removePayer({{$index}})" icon="o-trash"
+                                class="btn-ghost btn-sm text-error" />
+                        </div>
                         @endif
                     </div>
                     @endforeach

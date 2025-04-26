@@ -91,7 +91,7 @@ class Expense extends Model
       */
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'expense_participants')->withPivot('role', 'amount')->withTimestamps();
+        return $this->belongsToMany(User::class, 'expense_participants')->withPivot('role', 'amount','amount_paid','exclude_from_share')->withTimestamps();
     }//end participants()
 
 
@@ -139,6 +139,17 @@ class Expense extends Model
     {
         return $this->hasMany(Debt::class)->where('is_settled', false);
     }//end unsettledDebts()
+
+
+    /**
+     * Sharing Participants.
+     *
+     * @return mixed
+     */
+    public function sharingParticipants()
+    {
+        return $this->belongsToMany(User::class, 'expense_participants')->wherePivot('exclude_from_share', false)->withPivot(['amount', 'amount_paid']);
+    }//end sharingParticipants()
 
 
 }//end class

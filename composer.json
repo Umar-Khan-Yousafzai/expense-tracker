@@ -1,11 +1,17 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "expense-tracker/expense-tracker",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "finance",
+        "budget",
+        "money",
+        "personal finance",
+        "expense",
+        "tracker"
     ],
     "license": "MIT",
     "require": {
