@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -56,12 +57,15 @@ class Expense extends Model
      * @var array
      */
     protected $dates = [
+        'paid_at',
         'deleted_at',
         'created_at',
         'updated_at',
     ];
 
-
+    protected $casts = [
+        'paid_at' => 'datetime',
+    ];
     /**
      * Creates the relationship with user.
      *
@@ -91,7 +95,7 @@ class Expense extends Model
       */
     public function participants()
     {
-        return $this->belongsToMany(User::class, 'expense_participants')->withPivot('role', 'amount','amount_paid','exclude_from_share')->withTimestamps();
+        return $this->belongsToMany(User::class, 'expense_participants')->withPivot('role', 'amount', 'amount_paid', 'exclude_from_share')->withTimestamps();
     }//end participants()
 
 
@@ -150,6 +154,72 @@ class Expense extends Model
     {
         return $this->belongsToMany(User::class, 'expense_participants')->wherePivot('exclude_from_share', false)->withPivot(['amount', 'amount_paid']);
     }//end sharingParticipants()
+
+
+    // In Expense.php (model)
+    public function scopeGroupedByDate($query)
+    {
+        return $query->selectRaw('
+        DATE(paid_at) as date,
+        SUM(total_amount) as total_amount,
+        GROUP_CONCAT(id) as expense_ids
+    ')->groupBy('date');
+    }//end scopeGroupedByDate()
+
+
+    // Usage in ReportService
+
+
+    /**
+     * getSpending
+     *
+     * @param  mixed $user
+     * @param  mixed $filters
+     * @return void
+     */
+    private function getSpending(User $user, array $filters)
+    {
+        return self::byUser($user->id)->filter($filters)->groupedByDate()->orderBy('date', 'desc')->get()->map(function ($group) {
+            return [
+                'date'         => $group->date,
+                'total_amount' => $group->total_amount,
+                'expenses'     => Expense::findMany(explode(',', $group->expense_ids)),
+            ];
+        });
+    }//end getSpending()
+
+
+    /**
+     * The scopeFilterByDate
+     *
+     * @param  mixed $query
+     * @param  array $filters
+     * @return mixed
+     */
+    public function scopeFilterByDate($query, array $filters)
+    {
+        // Handle null or empty filters
+        if (empty($filters)) {
+            return $query;
+        }
+
+        // Custom date range
+        if ($filters['period'] === 'custom') {
+            $startDate = Carbon::parse($filters['start_date'] ?? now()->subMonth())->startOfDay();
+            $endDate   = Carbon::parse($filters['end_date'] ?? now())->endOfDay();
+
+            return $query->whereBetween('paid_at', [$startDate, $endDate]);
+        }
+
+        // Predefined periods
+        return match ($filters['period']) {
+            'week' => $query->where('paid_at', '>=', now()->subWeek()),
+            'month' => $query->where('paid_at', '>=', now()->subMonth()),
+            'year' => $query->where('paid_at', '>=', now()->subYear()),
+            default => $query
+            // Fallback if period is invalid
+        };
+    }//end scopeFilterByDate()
 
 
 }//end class

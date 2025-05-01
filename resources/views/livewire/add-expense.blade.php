@@ -27,19 +27,20 @@
                     <div>
                         <x-datetime label="Expense Paid at" wire:model="dateTimePaidAt" type="date" />
                     </div>
-                    <div>
+                    {{-- <div>
                         <x-choices label="Shared With (Participants)" wire:model="expenseSharedWith"
                             :options="$fetchedUsers" placeholder="Select participants..."
                             error-field="paid_by_and_shared_with_error" clearable searchable />
-                    </div>
+                    </div> --}}
                 </div>
             </x-card>
 
             <!-- Who Paid? (Dynamic Amounts) -->
             <x-card>
                 <div class="space-y-4">
-                    <h3 class="font-bold text-gray-700">Who Paid?</h3>
+                    <h3 class="font-bold ">Participants</h3>
 
+                    <p class="text-sm">Those Participants who didn't pay just insert 0 for them (happening by default)</p>
                     <!-- Dynamic Payers List -->
                     @foreach($payers as $index => $payer)
                     <div class="grid grid-cols-12 gap-4 items-end">

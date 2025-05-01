@@ -65,13 +65,6 @@ class AddExpense extends Component
     public $dateTimePaidAt;
 
     /**
-     * The array of users who paid the expense.
-     *
-     * @var array
-     */
-    public $expenseSharedWith = [];
-
-    /**
      * The array of users fetched from the database.
      *
      * @var array
@@ -153,36 +146,17 @@ class AddExpense extends Component
                 'required',
                 'date',
             ],
-            'expenseSharedWith'           => [
-                'required',
-                'array',
-                'min:1',
-            ],
-            'expenseSharedWith.*'         => [
-                'integer',
-                'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    $payerIds = array_column($this->payers ?? [], 'user_id');
-                    if (in_array($value, $payerIds)) {
-                        $fail('A person who is paying both payers and shared list.');
-                    }
-                },
-            ],
-            'payers'                      => [
-                'required',
-                'array',
-                'min:1',
-            ],
+
+            // 'payers'                      => [
+            // 'required',
+            // 'array',
+            // 'min:0',
+            // ],
             'payers.*.user_id'            => [
                 'required',
                 'exists:users,id',
-                function ($attribute, $value, $fail) {
-                    if (in_array($value, $this->expenseSharedWith ?? [])) {
-                        $fail('A person in Payer list cannot be in shared list.');
-                    }
-                },
             ],
-            'payers.*.amount'             => 'required|numeric|min:0.01',
+            'payers.*.amount'             => 'required|numeric|min:0.00',
             'payers.*.exclude_from_share' => 'boolean',
         ];
     }//end rules()
@@ -254,17 +228,14 @@ class AddExpense extends Component
             return;
         }
 
-        foreach ($this->expenseSharedWith as $key => $value) {
-            $this->expenseSharedWith[$key] = [
-                'user_id'            => $value,
-                'role'               => 'participant',
-                'amount'             => 0,
-                'exclude_from_share' => false,
-            ];
+        foreach ($this->payers as $key => $value) {
+            if ($value['amount'] < 1 || $value['amount'] < '1') {
+                $this->payers[$key]['role'] = 'participant';
+            }
         }
 
-        $totalPeople = array_merge($this->payers, $this->expenseSharedWith);
-        logger($totalPeople);
+        $totalPeople = $this->payers;
+
         /**
          * @disregard
          */
@@ -277,8 +248,8 @@ class AddExpense extends Component
             'total_people'        => $totalPeople,
 
         ];
-         $this->expenseService->createExpense(data:$data);
-         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt', 'expenseSharedWith' ]);
+        $this->expenseService->createExpense(data:$data);
+         $this->reset(['amount', 'description', 'selectedCategory', 'dateTimePaidAt' ]);
         $this->success(
             'Expense added successfully!',
             'Please check your shares now',

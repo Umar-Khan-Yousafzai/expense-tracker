@@ -226,9 +226,15 @@ class ExpenseService
     }//end getAllExpensesWithParticipants()
 
 
+    /**
+     * Update Expense
+     *
+     * @param  mixed $expense
+     * @param  mixed $data
+     * @return Expense
+     */
     public function updateExpense(Expense $expense, array $data): Expense
     {
-
         return DB::transaction(function () use ($expense, $data) {
             // 1. First delete all existing debts for this expense
             Debt::where('expense_id', $expense->id)->delete();

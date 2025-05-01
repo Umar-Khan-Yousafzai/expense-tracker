@@ -2,6 +2,7 @@
 
 use App\Livewire\AddExpense;
 use App\Livewire\EditExpense;
+use App\Livewire\ExpenseReport;
 use App\Livewire\ViewExpense;
 use App\Livewire\ViewExpenses;
 use App\Livewire\Welcome;
@@ -14,6 +15,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/expenses/{expense}/edit', EditExpense::class)->name('edit.expense');
     Route::get('/expenses/{expense}', ViewExpense::class)->name('view.expense');
     Route::get('/expenses', ViewExpenses::class)->name('view.expenses');
+    Route::get('/show-report', ExpenseReport::class)->name('view.report');
 });
 
 
