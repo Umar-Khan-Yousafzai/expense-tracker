@@ -42,6 +42,7 @@ Follow these steps to set up the project locally:
 |------|------------------------------------------------------------------------|
 | 1    | Open your browser and navigate to `http://localhost:3000`.             |
 | 2    | Add your daily expenses and manage them efficiently.                   |
+| 3    | View your debts, settlements & expenses all in one place.              |
 
 ---
 
@@ -80,7 +81,7 @@ We welcome contributions! Follow these steps to contribute:
 ## Versioning
 
 This project adheres to [Semantic Versioning](https://semver.org/).  
-**Current Version**: `v1.1.0`
+**Current Version**: `v1.2.0`
 
 
 ## Version History
@@ -89,6 +90,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 |-----------|----------------|-------------------------------------------------------------------------|
 | **v1.0.0** | `2025-04-20`  | Initial release with basic expense tracking features.                   |
 | **v1.1.0** | `2025-04-25`  | Added user-friendly interface improvements and bug fixes.               |
+| **v1.2.0** | `2025-04-28`  | Revamped the working of add-expense totally, and add report for user.   |
 
 Stay tuned for future updates!
 

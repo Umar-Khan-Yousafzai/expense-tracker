@@ -52,9 +52,12 @@
 
                 <x-menu-sub title="Expenses" icon="o-currency-dollar">
                     <x-menu-item title="View Expenses" icon="o-sparkles" link="{{ route('view.expenses') }}" />
-                    <x-menu-item title="Sharing Expense" icon="o-calculator" link="{{ route('add.expense') }}" />
+                    <x-menu-item title="Add Sharing Expense" icon="o-calculator" link="{{ route('add.expense') }}" />
                 </x-menu-sub>
 
+                <x-menu-sub title="Report" icon="o-document-currency-yen">
+                    <x-menu-item title="View Reports" icon="o-document-chart-bar" link="{{ route('view.report') }}" />
+                </x-menu-sub>
 
             </x-menu>
         </x-slot:sidebar>
