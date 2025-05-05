@@ -102,11 +102,11 @@ class EditExpense extends Component
 
     public function save()
     {
+
         $this->validate([
             'selectedCategory'  => 'required|exists:expense_categories,id',
             'amount'            => 'required|numeric|min:1',
             'dateTimePaidAt'    => 'required|date',
-            'expenseSharedWith' => 'required|array|min:1',
             'payers'            => 'required|array|min:1',
             'payers.*.user_id'  => 'required|exists:users,id',
             'payers.*.amount'   => 'required|numeric|min:0.00',

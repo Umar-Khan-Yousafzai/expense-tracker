@@ -16,6 +16,7 @@ class Debt extends Model
         'borrower_id',
         'amount',
         'is_settled',
+        'expense_date'
     ];
 
     // Relationships

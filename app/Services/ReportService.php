@@ -20,6 +20,7 @@ class ReportService
             'debts_receivable'     => $this->getDebtsReceivable($user, $filters),
             'settled_transactions' => $this->getSettledTransactions($user, $filters),
             'category_breakdown'   => $this->getCategoryBreakdown($user, $filters),
+            'net_balances' => $this->getNetBalances($user, $filters),
         ];
     }//end generate()
 
@@ -91,10 +92,41 @@ class ReportService
         return Debt::where(function ($query) use ($user) {
                 $query->where('borrower_id', $user->id)->orWhere('lender_id', $user->id);
         })->settled()->with(['lender', 'borrower', 'expense'])->filterByDate($filters)->latest()->get()->groupBy(function ($debt) {
-                return $debt->created_at->format('Y-m-d');
+                return $debt->expense_date>format('Y-m-d');
         });
     }//end getSettledTransactions()
 
+// In App\Services\ReportService.php
+
+private function getNetBalances(User $user, array $filters): Collection
+{
+    $owed = $this->getDebtsOwed($user, $filters);
+    $receivable = $this->getDebtsReceivable($user, $filters);
+
+    // Combine all people you have transactions with
+    $people = collect([])
+        ->merge($owed->keys())
+        ->merge($receivable->keys())
+        ->unique()
+        ->sort();
+
+    return $people->mapWithKeys(function ($person) use ($owed, $receivable) {
+        $totalOwed = $owed->has($person) ? $owed[$person]->sum('amount') : 0;
+        $totalReceivable = $receivable->has($person) ? $receivable[$person]->sum('amount') : 0;
+        $netBalance = $totalReceivable - $totalOwed;
+
+        return [
+            $person => [
+                'you_owe' => $totalOwed,
+                'owes_you' => $totalReceivable,
+                'net_balance' => $netBalance,
+                'is_positive' => $netBalance >= 0
+            ]
+        ];
+    })->sortByDesc('net_balance');
+}
+
+// Then add this to the generate() method:
 
     private function getCategoryBreakdown(User $user, array $filters): Collection
     {
