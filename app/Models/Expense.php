@@ -117,7 +117,7 @@ class Expense extends Model
      */
     public function sharedWith()
     {
-        return $this->participants()->wherePivot('role', 'payer', 'amount_paid');
+        return $this->participants()->wherePivot('role', 'participant', 'amount_paid');
     }//end sharedWith()
 
 
