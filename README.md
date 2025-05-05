@@ -6,7 +6,7 @@ This is a small utility web application with future development of Apis and mobi
 |----------------------------------|-----------------------------------------------------------------------------|
 | **Expense Tracking**             | Track daily expenses with ease.                                             |
 | **User-Friendly Interface**      | Add, edit, and delete expenses effortlessly.                                |
-| **Future Development**           | Plans for API integration and mobile app development.                       |
+| **Future Development**           | Plans for API integration and mobile app development. Completely overhaul Reports section with download feasibility. Options for Settlements                      |
 
 ---
 
@@ -40,7 +40,7 @@ Follow these steps to set up the project locally:
 
 | Step | Action                                                                 |
 |------|------------------------------------------------------------------------|
-| 1    | Open your browser and navigate to `http://localhost:3000`.             |
+| 1    | Open your browser and navigate to `http://localhost:8000`.             |
 | 2    | Add your daily expenses and manage them efficiently.                   |
 | 3    | View your debts, settlements & expenses all in one place.              |
 
@@ -51,6 +51,9 @@ Follow these steps to set up the project locally:
 | Feature                          | Status       |
 |----------------------------------|--------------|
 | Basic expense tracking           | ✅ Completed |
+| View Current Reports             | ✅ Completed |
+| Functionality to Settle Debts    | ⬜ Pending   |
+| Functionality to export reports  | ⬜ Pending   |
 | API integration for syncing data | ⬜ Pending   |
 | Mobile application development   | ⬜ Pending   |
 | Multi-user support               | ⬜ Pending   |
@@ -81,7 +84,7 @@ We welcome contributions! Follow these steps to contribute:
 ## Versioning
 
 This project adheres to [Semantic Versioning](https://semver.org/).  
-**Current Version**: `v1.2.0`
+**Current Version**: `v1.2.1`
 
 
 ## Version History
@@ -91,6 +94,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 | **v1.0.0** | `2025-04-20`  | Initial release with basic expense tracking features.                   |
 | **v1.1.0** | `2025-04-25`  | Added user-friendly interface improvements and bug fixes.               |
 | **v1.2.0** | `2025-04-28`  | Revamped the working of add-expense totally, and add report for user.   |
+| **v1.2.1** | `2025-05-05`  | Completely Revamped the working of update expense, revamped the ui for reports|
 
 Stay tuned for future updates!
 
