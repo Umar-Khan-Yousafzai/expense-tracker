@@ -243,7 +243,7 @@ class AddExpense extends Component
             'user_id'             => auth()->id(),
             'expense_category_id' => $this->selectedCategory,
             'total_amount'        => $this->amount,
-            'description'         => $this->description,
+            'description'         => $this->expenseDescription,
             'paid_at'             => $this->dateTimePaidAt,
             'total_people'        => $totalPeople,
 

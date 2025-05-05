@@ -1,3 +1,7 @@
+@php
+use Carbon\Carbon;
+@endphp
+
 <div class="p-4">
     @include('partials.header', ['title' => 'Expense Report'])
 
@@ -87,6 +91,60 @@
         </div>
     </div>
 
+
+
+<!-- Net Balances Section -->
+<div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-4 mb-6 ring-1 ring-gray-200 dark:ring-gray-700">
+    <h2 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100"> Net Balances ({{ $this->getPeriodDescription($this->filters) }})</h2>
+
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+            <thead class="bg-gray-50 dark:bg-gray-700">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Person</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">You Owe</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Owes You</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Net Balance</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                @foreach($this->netBalances as $person => $balance)
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                        {{ $person }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600 dark:text-red-400">
+                        @if($balance['you_owe'] > 0)
+                        - RS. {{ number_format($balance['you_owe'], 2) }}
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600 dark:text-green-400">
+                        @if($balance['owes_you'] > 0)
+                        + RS. {{ number_format($balance['owes_you'], 2) }}
+                        @else
+                        -
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-right font-medium {{ $balance['is_positive'] ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400' }}">
+                        @if($balance['net_balance'] > 0)
+                        {{ $person }} owes you RS. {{ number_format($balance['net_balance'], 2) }}
+                        @elseif($balance['net_balance'] < 0)
+                        You owe {{ $person }} RS. {{ number_format(abs($balance['net_balance']), 2) }}
+                        @else
+                        All settled
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
     <!-- Filter Column and Table - Dark Mode Enhanced -->
     <div class="flex flex-col md:flex-row gap-6">
         <!-- Filter Column -->
@@ -135,7 +193,7 @@
                         @foreach($this->report()['debts_owed'] as $person => $debts)
                         @foreach($debts as $debt)
                         <tr class="{{ $debt->is_settled ? 'opacity-70' : '' }} hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $debt->created_at->format('Y-m-d') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ Carbon::parse($debt->expense_date)->format('Y-m-d') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-400">You Owe</span>
                             </td>
@@ -156,7 +214,7 @@
                         @foreach($this->report()['debts_receivable'] as $person => $debts)
                         @foreach($debts as $debt)
                         <tr class="{{ $debt->is_settled ? 'opacity-70' : '' }} hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $debt->created_at->format('Y-m-d') }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ Carbon::parse($debt->expense_date)->format('Y-m-d') }}</td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400">Owes You</span>
                             </td>

@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('borrower_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->boolean('is_settled')->default(false);
+            $table->dateTime('expense_date')->index();
             $table->timestamps();
             $table->softDeletes();
         });

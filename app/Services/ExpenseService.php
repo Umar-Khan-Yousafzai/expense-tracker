@@ -41,7 +41,7 @@ class ExpenseService
     {
         $this->expenseModel    = $expense;
         $this->expenseCategory = $expenseCategory;
-    }//end __construct()
+    } //end __construct()
 
 
     /**
@@ -52,7 +52,7 @@ class ExpenseService
     public function calculateTotalExpenses(): float
     {
         return $this->expenseModel->sum('amount');
-    }//end calculateTotalExpenses()
+    } //end calculateTotalExpenses()
 
 
     /**
@@ -64,7 +64,7 @@ class ExpenseService
     public function getExpensesByCategory(string $category)
     {
         return $this->expenseModel->where('category', $category)->get();
-    }//end getExpensesByCategory()
+    } //end getExpensesByCategory()
 
 
     /**
@@ -113,7 +113,7 @@ class ExpenseService
             $this->calculateNetDebts($expense, $sharePerPerson);
             return $expense;
         });
-    }//end createExpense()
+    } //end createExpense()
 
 
     /**
@@ -153,6 +153,7 @@ class ExpenseService
                                 'borrower_id' => $borrowerId,
                                 'lender_id'   => $lenderId,
                                 'amount'      => $amount,
+                                'expense_date' => $expense->paid_at,
                             ]);
 
                             // Update balances
@@ -162,8 +163,8 @@ class ExpenseService
                     }
                 }
             }
-        }//end foreach
-    }//end calculateNetDebts()
+        } //end foreach
+    } //end calculateNetDebts()
 
 
     /**
@@ -191,7 +192,7 @@ class ExpenseService
         }
 
         return false;
-    }//end deleteExpense()
+    } //end deleteExpense()
 
 
     /**
@@ -202,7 +203,7 @@ class ExpenseService
     public function getAllCategories(): array
     {
         return $this->expenseCategory->whereNull('deleted_at')->get()->toArray();
-    }//end getAllCategories()
+    } //end getAllCategories()
 
 
     /**
@@ -212,18 +213,28 @@ class ExpenseService
      */
     public function getAllExpensesWithParticipants()
     {
+        $userId = auth()->id();
+
         return Expense::with([
-            'expenseCategory',
-            'payers' => function ($query) {
-                $query->withPivot('amount_paid', 'amount');
-            },
-            'participants' => function ($query) {
-                $query->withPivot('amount');
-            },
-            'unsettledDebts.lender',
-            'unsettledDebts.borrower'
-        ])->latest()->paginate(10);
-    }//end getAllExpensesWithParticipants()
+                'expenseCategory',
+                'payers' => function ($query) {
+                    $query->withPivot('amount_paid', 'amount');
+                },
+                'participants' => function ($query) {
+                    $query->withPivot('amount');
+                },
+                'unsettledDebts.lender',
+                'unsettledDebts.borrower'
+            ])
+            ->whereHas('payers', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            })
+            ->orWhereHas('participants', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            })
+            ->latest()
+            ->paginate(10);
+    }
 
 
     /**
@@ -272,7 +283,7 @@ class ExpenseService
 
             return $expense;
         });
-    }//end updateExpense()
+    } //end updateExpense()
 
 
 }//end class

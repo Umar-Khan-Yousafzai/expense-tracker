@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('receiver_id')->constrained('users')->onDelete('cascade');
             $table->decimal('amount', 10, 2);
             $table->date('settled_at');
+            $table->dateTime('expense_date')->index();
             $table->timestamps();
             $table->softDeletes();
         });

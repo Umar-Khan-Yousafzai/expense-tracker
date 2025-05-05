@@ -2,6 +2,7 @@
     @include('partials.header', ['title' => 'Edit Expense'])
 
     <x-form wire:submit="save" class="p-4">
+        <x-errors title="Oops!" description="Please, fix them." icon="o-face-frown" />
         <x-card title="Edit Expense" shadow separator>
             <!-- Category + Total Amount -->
             <x-card>

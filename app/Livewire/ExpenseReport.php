@@ -5,6 +5,7 @@ namespace App\Livewire;
 use Livewire\Component;
 use Livewire\Attributes\Computed;
 use App\Services\ReportService;
+use Carbon\Carbon;
 use Mary\Traits\Toast;
 
 class ExpenseReport extends Component
@@ -12,7 +13,7 @@ class ExpenseReport extends Component
     use Toast;
 
     // Filters
-    public $period = 'month';
+    public $period = 'last_month';
     public $start_date;
     public $end_date;
     public $status = 'all';
@@ -29,8 +30,12 @@ class ExpenseReport extends Component
             'name' => 'Last Week',
         ],
         [
-            'id'   => 'month',
+            'id'   => 'last_month',
             'name' => 'Last Month',
+        ],
+        [
+            'id'   => 'current_month',
+            'name' => 'Current Month',
         ],
         [
             'id'   => 'year',
@@ -93,27 +98,35 @@ class ExpenseReport extends Component
     {
         $this->setDefaultDates();
     }
-
     public function updatedPeriod($value)
     {
-        // When period changes (except custom), set appropriate dates
         if ($value !== 'custom') {
-            $this->start_date = match($value) {
-                'week' => now()->subWeek()->format('Y-m-d'),
-                'month' => now()->subMonth()->format('Y-m-d'),
-                'year' => now()->subYear()->format('Y-m-d'),
-                default => now()->format('Y-m-d')
-            };
-            $this->end_date = now()->format('Y-m-d');
+            $now = now();
+
+            if ($value === 'week') {
+                $this->start_date = $now->copy()->subWeek()->format('Y-m-d');
+                $this->end_date = $now->format('Y-m-d');
+            } elseif ($value === 'last_month') {
+                $lastMonth = $now->copy()->subMonth();
+                $this->start_date = $lastMonth->startOfMonth()->format('Y-m-d');
+                $this->end_date = $lastMonth->endOfMonth()->format('Y-m-d');
+            } elseif ($value === 'current_month') {
+                $this->start_date = $now->copy()->startOfMonth()->format('Y-m-d');
+                $this->end_date = $now->copy()->endOfMonth()->format('Y-m-d');
+            } elseif ($value === 'year') {
+                $this->start_date = $now->copy()->subYear()->format('Y-m-d');
+                $this->end_date = $now->format('Y-m-d');
+            } else {
+                $this->start_date = $now->format('Y-m-d');
+                $this->end_date = $now->format('Y-m-d');
+            }
         }
 
         $this->validate();
     }
-
     protected function setDefaultDates()
     {
-        $this->start_date = now()->subMonth()->format('Y-m-d');
-        $this->end_date   = now()->format('Y-m-d');
+        $this->updatedPeriod($this->period);
     }
 
     public function updated()
@@ -140,6 +153,30 @@ class ExpenseReport extends Component
         return $this->reportService->generate(auth()->user(), $this->filters);
     }
 
+    #[Computed]
+    public function netBalances()
+    {
+        return $this->report['net_balances'] ?? collect();
+    }
+    // In App\Livewire\ExpenseReport.php
+
+    private function getPeriodDescription(array $filters): string
+    {
+        if ($filters['period'] === 'custom') {
+            $start = Carbon::parse($filters['start_date'])->format('M d, Y');
+            $end = Carbon::parse($filters['end_date'])->format('M d, Y');
+            return "$start to $end";
+        }
+
+        return match ($filters['period']) {
+            'week' => 'Last Week (' . Carbon::parse($this->start_date)->format('M d') . ' - ' .
+                Carbon::parse($this->end_date)->format('M d, Y') . ')',
+            'last_month' => 'Last Month (' . Carbon::parse($this->start_date)->format('M Y') . ')',
+            'current_month' => 'Current Month (' . Carbon::parse($this->start_date)->format('M Y') . ')',
+            'year' => 'Last Year (' . Carbon::parse($this->start_date)->format('Y') . ')',
+            default => 'Period: ' . ucfirst($filters['period'])
+        };
+    }
     #[Computed]
     public function filteredDebts()
     {
