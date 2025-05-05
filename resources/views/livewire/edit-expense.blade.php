@@ -39,7 +39,7 @@
                             type="date"
                         />
                     </div>
-                    <div>
+                    {{-- <div>
                         <x-choices
                             label="Shared With (Participants)"
                             wire:model="expenseSharedWith"
@@ -48,7 +48,7 @@
                             clearable
                             searchable
                         />
-                    </div>
+                    </div> --}}
                 </div>
             </x-card>
 
@@ -80,7 +80,7 @@
                             <x-checkbox
                                 wire:model="payers.{{$index}}.exclude_from_share"
                                 label="Exclude from share"
-                              
+
                                 class="checkbox-sm"
                             />
                         </div>

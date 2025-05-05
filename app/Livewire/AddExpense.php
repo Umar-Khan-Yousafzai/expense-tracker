@@ -229,7 +229,7 @@ class AddExpense extends Component
         }
 
         foreach ($this->payers as $key => $value) {
-            if ($value['amount'] < 1 || $value['amount'] < '1') {
+            if ($value['amount'] < 0.01 || $value['amount'] < '0.01') {
                 $this->payers[$key]['role'] = 'participant';
             }
         }
