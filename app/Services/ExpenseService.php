@@ -110,7 +110,7 @@ class ExpenseService
                 ]);
             }
 
-            $this->calculateNetDebts($expense, $sharePerPerson);
+            $this->calculateNetDebts($expense, $sharePerPerson, false);
             return $expense;
         });
     } //end createExpense()
@@ -121,9 +121,10 @@ class ExpenseService
      *
      * @param  Expense $expense
      * @param  float   $sharePerPerson
+     * @param  boolean $isSettled
      * @return void
      */
-    protected function calculateNetDebts(Expense $expense, float $sharePerPerson): void
+    protected function calculateNetDebts(Expense $expense, float $sharePerPerson, ?bool $isSettled): void
     {
         $participants = $expense->participants()->withPivot(['amount_paid', 'amount', 'exclude_from_share'])->get();
 
@@ -154,6 +155,7 @@ class ExpenseService
                                 'lender_id'   => $lenderId,
                                 'amount'      => $amount,
                                 'expense_date' => $expense->paid_at,
+                                'is_settled'  => $isSettled??false,
                             ]);
 
                             // Update balances
@@ -251,7 +253,7 @@ class ExpenseService
             Debt::where('expense_id', $expense->id)->delete();
 
             // 2. Update the expense details
-            $expense->update([
+            $expense->update(attributes: [
                 'expense_category_id' => $data['expense_category_id'],
                 'total_amount'        => $data['total_amount'],
                 'description'         => $data['description'],
@@ -279,7 +281,7 @@ class ExpenseService
             $expense->participants()->sync($participants);
 
             // 5. Calculate fresh debts (now without duplicates)
-            $this->calculateNetDebts($expense, $sharePerPerson);
+            $this->calculateNetDebts($expense, $sharePerPerson, $data['is_settled']);
 
             return $expense;
         });

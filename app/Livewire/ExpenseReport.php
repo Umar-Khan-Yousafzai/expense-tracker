@@ -13,7 +13,7 @@ class ExpenseReport extends Component
     use Toast;
 
     // Filters
-    public $period = 'last_month';
+    public $period = 'current_month';
     public $start_date;
     public $end_date;
     public $status = 'all';
@@ -148,7 +148,7 @@ class ExpenseReport extends Component
     }
 
     #[Computed]
-    public function report()
+    public function report(): array
     {
         return $this->reportService->generate(auth()->user(), $this->filters);
     }
@@ -156,6 +156,7 @@ class ExpenseReport extends Component
     #[Computed]
     public function netBalances()
     {
+
         return $this->report['net_balances'] ?? collect();
     }
     // In App\Livewire\ExpenseReport.php
@@ -178,36 +179,36 @@ class ExpenseReport extends Component
         };
     }
     #[Computed]
-    public function filteredDebts()
-    {
-        $report = $this->report;
+    // public function filteredDebts()
+    // {
+    //     $report = $this->report;
 
-        if ($this->debtFilter === 'owed') {
-            return [
-                'debts_owed' => $report['debts_owed'] ?? [],
-                'debts_receivable' => []
-            ];
-        }
+    //     if ($this->debtFilter === 'owed') {
+    //         return [
+    //             'debts_owed' => $report['debts_owed'] ?? [],
+    //             'debts_receivable' => []
+    //         ];
+    //     }
 
-        if ($this->debtFilter === 'receivable') {
-            return [
-                'debts_owed' => [],
-                'debts_receivable' => $report['debts_receivable'] ?? []
-            ];
-        }
+    //     if ($this->debtFilter === 'receivable') {
+    //         return [
+    //             'debts_owed' => [],
+    //             'debts_receivable' => $report['debts_receivable'] ?? []
+    //         ];
+    //     }
 
-        return [
-            'debts_owed' => $report['debts_owed'] ?? [],
-            'debts_receivable' => $report['debts_receivable'] ?? []
-        ];
-    }
+    //     return [
+    //         'debts_owed' => $report['debts_owed'] ?? [],
+    //         'debts_receivable' => $report['debts_receivable'] ?? []
+    //     ];
+    // }
 
     public function render()
     {
         return view('livewire.expense-report', [
-            'expenses' => $this->report['daily_expenses'] ?? [],
-            'debts'    => $this->filteredDebts['debts_receivable'] ?? [],
-            'owed'     => $this->filteredDebts['debts_owed'] ?? [],
+            // 'expenses' => $this->report['daily_expenses'] ?? [],
+            // 'debts'    => $this->filteredDebts['debts_receivable'] ?? [],
+            // 'owed'     => $this->filteredDebts['debts_owed'] ?? [],
         ]);
     }
 }

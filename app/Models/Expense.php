@@ -211,6 +211,13 @@ class Expense extends Model
             return $query->whereBetween('paid_at', [$startDate, $endDate]);
         }
 
+        if (!empty($filters['start_date']) && !empty($filters['end_date'])) {
+            $startDate = Carbon::parse($filters['start_date'])->startOfDay();
+            $endDate = Carbon::parse($filters['end_date'])->endOfDay();
+
+            return $query->whereBetween('paid_at', [$startDate, $endDate]);
+        }
+
         // Predefined periods
         return match ($filters['period']) {
             'week' => $query->where('paid_at', '>=', now()->subWeek()),

@@ -35,6 +35,7 @@ class EditExpense extends Component
 
     public $expenseSharedWith = [];
 
+    public bool $isSettled = false;
 
     public function boot(ExpenseService $expenseService, UserService $userService)
     {
@@ -134,6 +135,7 @@ class EditExpense extends Component
             'description'         => $this->description,
             'paid_at'             => $this->dateTimePaidAt,
             'total_people'        => $totalPeople,
+            'is_settled'          => $this->isSettled,
         ];
 
         $this->expenseService->updateExpense($this->expense, $data);

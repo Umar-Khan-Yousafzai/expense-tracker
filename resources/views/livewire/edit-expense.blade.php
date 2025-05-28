@@ -40,16 +40,15 @@
                             type="date"
                         />
                     </div>
-                    {{-- <div>
-                        <x-choices
-                            label="Shared With (Participants)"
-                            wire:model="expenseSharedWith"
-                            :options="$fetchedUsers"
-                            placeholder="Select participants..."
-                            clearable
-                            searchable
-                        />
-                    </div> --}}
+
+                        <div class="md:mt-9">
+                            <x-checkbox
+                            label="Is Debt Settled?"
+                            wire:model="isSettled"
+                            hint="If checked, this expense will be marked as settled."
+                            />
+                        </div>
+
                 </div>
             </x-card>
 
