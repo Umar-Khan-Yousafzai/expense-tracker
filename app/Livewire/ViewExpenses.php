@@ -50,6 +50,14 @@ class ViewExpenses extends Component
      */
     public int $expenseId;
 
+
+    /**
+     * The sortBy for the table.
+     *
+     * @var array
+     */
+    public array $sortBy = ['column' => '#', 'direction' => 'asc'];
+
     /**
      * The headers for the table.
      *
@@ -60,6 +68,7 @@ class ViewExpenses extends Component
             'key'   => 'id',
             'label' => '#',
             'class' => 'w-1',
+
         ],
         [
             'key'   => 'paid_at',
