@@ -287,5 +287,20 @@ class ExpenseService
         });
     } //end updateExpense()
 
+    /**
+     * Settles the debt of a user
+     *
+     * @return void
+     */
+    public function settleDebt(int $id) {
+
+    }
+
+    /**
+     * Settles multiple debts in bulk.
+     *
+     * @return void
+     */
+    public function bulkSettleDebts(){}
 
 }//end class
