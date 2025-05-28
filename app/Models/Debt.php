@@ -19,6 +19,15 @@ class Debt extends Model
         'expense_date'
     ];
 
+    /**
+     * casts
+     *
+     * @var array
+     */
+    protected $casts = [
+        'expense_date' => 'date',
+    ];
+
     // Relationships
     public function lender()
     {
@@ -64,32 +73,54 @@ class Debt extends Model
 
     public function scopeFilterByDate($query, array $filters)
     {
-        // Handle null or empty filters
-        if (empty($filters)) {
+        if (empty($filters) || empty($filters['period'])) {
             return $query;
         }
 
-        // Custom date range
-        if ($filters['period'] === 'custom') {
-            $startDate = $filters['start_date']
-                ? Carbon::parse($filters['start_date'])->startOfDay()
-                : now()->subMonth();
+        $now = now();
+        $startDate = $now->copy()->startOfDay();
+        $endDate = $now->copy()->endOfDay();
 
-            $endDate = $filters['end_date']
-                ? Carbon::parse($filters['end_date'])->endOfDay()
-                : now();
+        switch ($filters['period']) {
+            case 'week':
+                $startDate = $now->copy()->subWeek()->startOfDay();
+                break;
 
-            return $query->whereBetween('created_at', [$startDate, $endDate]);
+            case 'last_month':
+                $lastMonth = $now->copy()->subMonth();
+                $startDate = $lastMonth->copy()->startOfMonth()->startOfDay();
+                $endDate = $lastMonth->copy()->endOfMonth()->endOfDay();
+                break;
+
+            case 'current_month':
+                $startDate = $now->copy()->startOfMonth()->startOfDay();
+                $endDate = $now->copy()->endOfMonth()->endOfDay();
+
+                break;
+
+            case 'year':
+                $startDate = $now->copy()->subYear()->startOfDay();
+                $endDate = $now->copy()->endOfDay();
+                break;
+
+            case 'custom':
+                $startDate = !empty($filters['start_date'])
+                    ? Carbon::parse($filters['start_date'])->startOfDay()
+                    : $now->copy()->subMonth()->startOfDay();
+
+                $endDate = !empty($filters['end_date'])
+                    ? Carbon::parse($filters['end_date'])->endOfDay()
+                    : $now->copy()->endOfDay();
+                break;
+
+            default:
+                // Keep startDate and endDate as today's date
+                break;
         }
 
-        // Predefined periods
-        return match ($filters['period']) {
-            'week' => $query->where('created_at', '>=', now()->subWeek()),
-            'month' => $query->where('created_at', '>=', now()->subMonth()),
-            'year' => $query->where('created_at', '>=', now()->subYear()),
-            default => $query // Fallback if period is invalid
-        };
+        return $query->whereBetween('expense_date', [$startDate, $endDate]);
     }
+
 
     public function scopeFilterByStatus($query, string $status)
     {
