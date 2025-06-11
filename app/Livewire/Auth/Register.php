@@ -14,9 +14,6 @@ use Livewire\Component;
 
 #[Layout('components.layouts.empty')]
 #[Title('Register')]
-/**
- * Register
- */
 class Register extends Component
 {
     #[Rule('required|string|max:255')]
