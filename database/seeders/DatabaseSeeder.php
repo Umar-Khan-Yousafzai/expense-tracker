@@ -19,10 +19,13 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Create default admin user
         User::factory()->create([
             'name'  => 'Umer Farooq',
             'email' => 'umerfarooqkhan325@gmail.com',
         ]);
+
+        // Create additional test users
         User::factory()->create([
             'name'  => 'Ijaz Yetitech',
             'email' => 'ijaz@yetitech.com',
@@ -32,6 +35,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'ahmadArshad@gmail.com',
         ]);
 
+        // Create default expense categories for the first user
         ExpenseCategory::factory(count: 17)->create();
     }//end run()
 
