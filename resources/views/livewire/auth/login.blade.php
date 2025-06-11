@@ -45,7 +45,7 @@
                             placeholder="Enter your email address" 
                             wire:model="email" 
                             type="email"
-                            class="rounded-xl border-slate-600 focus:border-blue-500 focus:ring-blue-500/20 transition-all duration-200 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
+                            class="dark-input rounded-xl border-slate-600 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
                             placeholder="Enter your password" 
                             wire:model="password" 
                             type="password"
-                            class="rounded-xl border-slate-600 focus:border-green-500 focus:ring-green-500/20 transition-all duration-200 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
+                            class="dark-input rounded-xl border-slate-600 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
                         />
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -89,7 +89,7 @@
                     <div class="flex items-center">
                         <x-checkbox 
                             wire:model="remember"
-                            class="checkbox-sm rounded border-2 border-gray-600 focus:border-purple-500 focus:ring-purple-500/20"
+                            class="dark-checkbox checkbox-sm rounded border-2 border-gray-600"
                         />
                         <label class="ml-2 text-sm text-gray-300 font-medium">
                             Remember me
@@ -181,9 +181,59 @@
         backdrop-filter: blur(20px);
     }
 
-    /* Custom focus states */
-    input:focus {
-        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+    /* Custom dark input styles - NO WHITE BORDERS */
+    .dark-input {
+        transition: all 0.2s ease-in-out;
+    }
+
+    .dark-input:focus {
+        outline: none !important;
+        border-color: #3b82f6 !important; /* Blue border */
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important; /* Blue glow */
+        background-color: rgba(55, 65, 81, 0.9) !important; /* Darker background on focus */
+    }
+
+    /* Override any default focus styles */
+    input[type="email"].dark-input:focus,
+    input[type="password"].dark-input:focus,
+    input.dark-input:focus {
+        outline: none !important;
+        border-color: #3b82f6 !important;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+        background-color: rgba(55, 65, 81, 0.9) !important;
+        color: white !important;
+    }
+
+    /* Password field specific focus */
+    input[type="password"].dark-input:focus {
+        border-color: #10b981 !important; /* Green border for password */
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important; /* Green glow */
+    }
+
+    /* Custom dark checkbox styles */
+    .dark-checkbox:focus {
+        outline: none !important;
+        border-color: #8b5cf6 !important; /* Purple border */
+        box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15) !important; /* Purple glow */
+    }
+
+    .dark-checkbox:checked {
+        background-color: #8b5cf6 !important; /* Purple background when checked */
+        border-color: #8b5cf6 !important;
+    }
+
+    /* Remove any default browser focus outlines */
+    *:focus {
+        outline: none !important;
+    }
+
+    /* Ensure all form elements maintain dark theme */
+    input, select, textarea {
+        color: white !important;
+    }
+
+    input::placeholder {
+        color: #9ca3af !important; /* Gray-400 */
     }
 
     /* Smooth transitions for all interactive elements */
@@ -194,4 +244,4 @@
     }
 </style>
 @endpush
-</invoke>
+</div>
