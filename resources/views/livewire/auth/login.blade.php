@@ -47,7 +47,7 @@
                             type="email"
                             class="dark-input rounded-xl border-slate-600 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
                         />
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 input-icon email-icon">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
                             </svg>
@@ -76,7 +76,7 @@
                             type="password"
                             class="dark-input rounded-xl border-slate-600 pl-12 py-4 text-base bg-gray-700/80 backdrop-blur-sm text-white placeholder-gray-400"
                         />
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 input-icon password-icon">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                             </svg>
@@ -181,6 +181,35 @@
         backdrop-filter: blur(20px);
     }
 
+    /* Input Icon Styles - ALWAYS VISIBLE */
+    .input-icon {
+        pointer-events: none;
+        z-index: 10;
+        color: #9ca3af !important; /* Gray-400 - default state */
+        transition: color 0.2s ease-in-out;
+    }
+
+    /* Email icon - blue when focused */
+    .dark-input:focus + .email-icon,
+    .dark-input:focus ~ .email-icon {
+        color: #60a5fa !important; /* Blue-400 */
+    }
+
+    /* Password icon - green when focused */
+    .dark-input[type="password"]:focus + .password-icon,
+    .dark-input[type="password"]:focus ~ .password-icon {
+        color: #34d399 !important; /* Emerald-400 */
+    }
+
+    /* Alternative approach - target by input type */
+    input[type="email"]:focus ~ .input-icon {
+        color: #60a5fa !important; /* Blue-400 */
+    }
+
+    input[type="password"]:focus ~ .input-icon {
+        color: #34d399 !important; /* Emerald-400 */
+    }
+
     /* Custom dark input styles - NO WHITE BORDERS */
     .dark-input {
         transition: all 0.2s ease-in-out;
@@ -234,6 +263,13 @@
 
     input::placeholder {
         color: #9ca3af !important; /* Gray-400 */
+    }
+
+    /* Force SVG visibility */
+    .input-icon svg {
+        color: inherit !important;
+        stroke: currentColor !important;
+        fill: none !important;
     }
 
     /* Smooth transitions for all interactive elements */
