@@ -1,0 +1,9 @@
+tests/*
+storage/*
+routes/*
+config/*
+bootstrap/*
+database/*
+app/Providers/*
+app/Services/*
+app/View/*
