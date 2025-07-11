@@ -39,9 +39,9 @@
                         type="text" 
                         wire:model.live.debounce.300ms="search"
                         placeholder="🔍 Search expenses..."
-                        class="w-full pl-10 pr-4 py-3 border border-input bg-background/50 backdrop-blur-sm text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:shadow-md"
+                        class="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:shadow-md"
                     />
-                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
+                    <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 dark:text-gray-400">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -50,7 +50,7 @@
 
                 <!-- Status Filter -->
                 <select wire:model.live="statusFilter" 
-                        class="w-full px-4 py-3 border border-input bg-background/50 backdrop-blur-sm text-foreground rounded-xl focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 hover:shadow-md">
+                        class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white/50 dark:bg-gray-800/50 backdrop-blur-sm text-gray-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 hover:shadow-md">
                     <option value="">All Status</option>
                     <option value="settled">✅ Settled</option>
                     <option value="unsettled">⏳ Unsettled</option>
@@ -420,8 +420,8 @@
                 <!-- Modal Footer -->
                 <div class="bg-muted/30 px-6 py-4 border-t border-border">
                     <div class="flex justify-end">
-                        <button wire:click="$set('showModal', false)" 
-                                class="px-4 py-2 bg-background border border-input text-foreground rounded-lg hover:bg-muted transition-all duration-200">
+                        <button wire:click="$set('showModal', false)"
+                                class="px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
                             Close
                         </button>
                     </div>
@@ -456,8 +456,8 @@
 
                 <!-- Modal Footer -->
                 <div class="bg-muted/30 px-6 py-4 border-t border-border flex gap-3">
-                    <button wire:click="$set('showDeleteModal', false)" 
-                            class="flex-1 px-4 py-2 bg-background border border-input text-foreground rounded-lg hover:bg-muted transition-all duration-200">
+                    <button wire:click="$set('showDeleteModal', false)"
+                            class="flex-1 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200">
                         Cancel
                     </button>
                     <button wire:click="delete({{ $expenseId }})" 
