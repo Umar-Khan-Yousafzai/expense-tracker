@@ -1,42 +1,37 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
+<div class="min-h-screen bg-gradient-to-br from-slate-50 via-green-50 to-emerald-100 dark:from-gray-900 dark:via-slate-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
     <!-- Animated Background Elements -->
     <div class="absolute inset-0 overflow-hidden pointer-events-none">
         <div class="absolute -top-40 -right-40 w-80 h-80 bg-green-400/20 dark:bg-green-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div class="absolute top-1/2 -left-32 w-64 h-64 bg-blue-400/20 dark:bg-blue-500/10 rounded-full blur-3xl animate-bounce-slow"></div>
-        <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-purple-400/20 dark:bg-purple-500/10 rounded-full blur-3xl animate-float"></div>
-        
-        <!-- Floating particles -->
-        <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-green-400/60 dark:bg-green-300/40 rounded-full animate-float"></div>
-        <div class="absolute top-3/4 right-1/3 w-1 h-1 bg-blue-400/60 dark:bg-blue-300/40 rounded-full animate-float-delayed"></div>
-        <div class="absolute bottom-1/4 left-1/2 w-3 h-3 bg-purple-400/60 dark:bg-purple-300/40 rounded-full animate-float-slow"></div>
+        <div class="absolute top-1/2 -left-32 w-64 h-64 bg-emerald-400/20 dark:bg-emerald-500/10 rounded-full blur-3xl animate-bounce-slow"></div>
+        <div class="absolute bottom-0 right-1/4 w-48 h-48 bg-teal-400/20 dark:bg-teal-500/10 rounded-full blur-3xl animate-float"></div>
     </div>
 
     <div class="w-full max-w-md relative perspective-container">
-        <!-- Main Register Card with 3D Effect -->
+        <!-- Main Card with 3D Effect -->
         <div class="card-3d glass-effect rounded-3xl p-8 shadow-2xl border border-white/20 dark:border-gray-700/50 backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 glow-effect">
             <!-- Header decoration -->
-            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500 rounded-t-3xl"></div>
+            <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-teal-500 rounded-t-3xl"></div>
             
             <!-- Brand Section -->
             <div class="text-center mb-8">
                 <div class="flex justify-center mb-6">
-                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-blue-600 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-all duration-300 card-3d">
+                    <div class="w-20 h-20 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center shadow-2xl transform hover:scale-105 transition-all duration-300 card-3d">
                         <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                         </svg>
                     </div>
                 </div>
                 
                 <h1 class="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300 bg-clip-text text-transparent mb-2">
-                    Create Account ✨
+                    Reset Password 🔐
                 </h1>
                 <p class="text-muted-foreground text-sm">
-                    Join us to start tracking your expenses
+                    Enter your new password below
                 </p>
             </div>
 
-            <!-- Register Form -->
-            <form wire:submit="register" class="space-y-6">
+            <!-- Reset Password Form -->
+            <form wire:submit="resetPassword" class="space-y-6">
                 @if ($errors->any())
                     <div class="bg-destructive/10 border border-destructive/20 rounded-xl p-4">
                         <div class="flex items-center gap-3">
@@ -46,35 +41,14 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-destructive">Validation Error</h3>
+                                <h3 class="font-semibold text-destructive">Reset Error</h3>
                                 <p class="text-sm text-destructive/80">Please check the form and try again.</p>
                             </div>
                         </div>
                     </div>
                 @endif
                 
-                <!-- Name Section -->
-                <div class="space-y-2">
-                    <label for="name" class="block text-sm font-semibold text-foreground">Full Name</label>
-                    <div class="relative">
-                        <input 
-                            type="text"
-                            id="name"
-                            wire:model="name"
-                            placeholder="Enter your full name"
-                            class="form-input pl-12"
-                            required
-                        />
-                        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                            </svg>
-                        </div>
-                    </div>
-                    @error('name') <p class="text-sm text-destructive">{{ $message }}</p> @enderror
-                </div>
-
-                <!-- Email Section -->
+                <!-- Email Section (Read-only) -->
                 <div class="space-y-2">
                     <label for="email" class="block text-sm font-semibold text-foreground">Email Address</label>
                     <div class="relative">
@@ -82,9 +56,8 @@
                             type="email"
                             id="email"
                             wire:model="email"
-                            placeholder="Enter your email address"
-                            class="form-input pl-12"
-                            required
+                            class="form-input pl-12 bg-muted cursor-not-allowed"
+                            readonly
                         />
                         <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-muted-foreground">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -92,18 +65,17 @@
                             </svg>
                         </div>
                     </div>
-                    @error('email') <p class="text-sm text-destructive">{{ $message }}</p> @enderror
                 </div>
 
                 <!-- Password Section -->
                 <div class="space-y-2">
-                    <label for="password" class="block text-sm font-semibold text-foreground">Password</label>
+                    <label for="password" class="block text-sm font-semibold text-foreground">New Password</label>
                     <div class="relative">
                         <input 
                             type="password"
                             id="password"
                             wire:model="password"
-                            placeholder="Create a strong password"
+                            placeholder="Enter your new password"
                             class="form-input pl-12"
                             required
                         />
@@ -119,13 +91,13 @@
 
                 <!-- Confirm Password Section -->
                 <div class="space-y-2">
-                    <label for="password_confirmation" class="block text-sm font-semibold text-foreground">Confirm Password</label>
+                    <label for="password_confirmation" class="block text-sm font-semibold text-foreground">Confirm New Password</label>
                     <div class="relative">
                         <input 
                             type="password"
                             id="password_confirmation"
                             wire:model="password_confirmation"
-                            placeholder="Confirm your password"
+                            placeholder="Confirm your new password"
                             class="form-input pl-12"
                             required
                         />
@@ -138,64 +110,52 @@
                     @error('password_confirmation') <p class="text-sm text-destructive">{{ $message }}</p> @enderror
                 </div>
 
-                <!-- Terms Notice -->
+                <!-- Info Banner -->
                 <div class="bg-primary/10 border border-primary/20 rounded-xl p-4">
-                    <div class="flex items-start gap-3">
-                        <div class="w-6 h-6 bg-primary rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <svg class="w-3 h-3 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg class="w-4 h-4 text-primary-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
                         <p class="text-sm text-primary">
-                            By creating an account, you agree to our terms of service and privacy policy. Your data will be securely stored and used only for expense tracking purposes.
+                            <span class="font-semibold">Security:</span> Choose a strong password with letters, numbers, and symbols.
                         </p>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
                 <div class="space-y-4">
-                    <!-- Register Button -->
+                    <!-- Reset Password Button -->
                     <button 
                         type="submit" 
-                        class="w-full bg-gradient-to-r from-green-500 to-blue-600 hover:from-green-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 btn-3d flex items-center justify-center gap-3"
+                        class="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 btn-3d flex items-center justify-center gap-3"
                         wire:loading.attr="disabled"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span wire:loading.remove wire:target="register">Create Account</span>
-                        <span wire:loading wire:target="register">Creating Account...</span>
+                        <span wire:loading.remove wire:target="resetPassword">Reset Password</span>
+                        <span wire:loading wire:target="resetPassword">Resetting...</span>
                     </button>
                     
-                    <!-- Divider -->
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-border"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="px-4 bg-background text-muted-foreground rounded-full">
-                                Already have an account?
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <!-- Login Link -->
+                    <!-- Back to Login Link -->
                     <a 
                         href="{{ route('login') }}"
                         wire:navigate
                         class="w-full bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 border-2 border-border hover:border-primary text-foreground hover:text-primary font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 btn-3d flex items-center justify-center gap-3"
                     >
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
-                        <span>Sign In Instead</span>
+                        <span>Back to Login</span>
                     </a>
                 </div>
             </form>
         </div>
 
         <!-- Decorative Elements -->
-        <div class="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-br from-green-400/20 to-blue-500/20 rounded-full blur-xl animate-pulse-slow"></div>
-        <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-500/20 rounded-full blur-xl animate-float"></div>
+        <div class="absolute -top-4 -left-4 w-24 h-24 bg-gradient-to-br from-green-400/20 to-emerald-500/20 rounded-full blur-xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-4 -right-4 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-teal-500/20 rounded-full blur-xl animate-float"></div>
     </div>
 </div>
