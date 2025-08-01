@@ -20,7 +20,8 @@ class SendExpenseReportMonthlyJob implements ShouldQueue
 
     protected $user;
     protected $filters;
-
+    protected $signature = 'email:send-monthly-report';
+    protected $description = 'Send the monthly expense report to all users';
     public function __construct(User $user, array $filters = [])
     {
         $this->user = $user;
@@ -29,8 +30,6 @@ class SendExpenseReportMonthlyJob implements ShouldQueue
 
     public function handle(ReportService $reportService)
     {
-        logger()->info('Starting SendExpenseReportMonthlyJob for user: ' . $this->user->email);
-
         $report = $reportService->generate($this->user, $this->filters);
 
         $debts_owed = $report['debts_owed']->mapWithKeys(function ($debts, $person) {
@@ -55,7 +54,27 @@ class SendExpenseReportMonthlyJob implements ShouldQueue
                 })->toArray()
             ];
         })->filter()->toArray();
-        logger()->info(json_decode($report['user_expense_summary'],true));
+        $netBalances = [];
+        logger($report['net_balances']);
+        foreach ($report['net_balances']->toArray() ?? [] as $person => $balance) {
+            if (!isset($netBalances[$person])) {
+                $netBalances[$person] = [
+                    'you_owe' => 0,
+                    'owes_you' => 0,
+                    'net_balance' => 0,
+                ];
+            }
+
+            $netBalances[$person]['you_owe'] += $balance['you_owe'] ?? 0;
+            $netBalances[$person]['owes_you'] += $balance['owes_you'] ?? 0;
+            $netBalances[$person]['net_balance'] = $netBalances[$person]['owes_you'] - $netBalances[$person]['you_owe'];
+        }
+        Mail::to($this->user->email)->send(new ExpenseReportMonthlyMail(
+            $this->user,
+            $report['summary'],
+            $debts_owed,
+            $netBalances
+        ));
         try {
             logger()->info('Email sent successfully to: ' . $this->user->email);
         } catch (\Exception $e) {
