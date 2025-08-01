@@ -20,6 +20,9 @@ class Kernel extends ConsoleKernel
                 SendExpenseReportMonthlyJob::dispatch($user);
             }
         })->timezone('Asia/Karachi')->dailyAt('06:00');
+        $schedule->call(function () {
+            \Log::info('✅ Scheduler is working: ' . now());
+        })->everyMinute();
     }
 
     /**
