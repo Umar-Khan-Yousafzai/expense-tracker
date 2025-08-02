@@ -36,7 +36,7 @@ Schedule::call(function () {
     } catch (\Throwable $e) {
         Log::error('❌ Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
     }
-})->timezone('Asia/Karachi')->monthlyOn(2, '06:00'); // <-- Adjust the day as needed
+})->timezone('Asia/Karachi')->monthlyOn(2, '11:00'); // <-- Adjust the day as needed
 
 // Every minute heartbeat
 Schedule::call(function () {
