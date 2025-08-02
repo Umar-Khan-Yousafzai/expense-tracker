@@ -8,12 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 use Carbon\Carbon;
-Artisan::command('inspire', function () {
-    $this->comment(Inspiring::quote());
-})->purpose('Display an inspiring quote');
 
-
-// Monthly report dispatch
 Schedule::call(function () {
     try {
         Log::info('📤 Starting monthly expense report dispatch...');
@@ -32,17 +27,16 @@ Schedule::call(function () {
         foreach ($users as $user) {
             SendExpenseReportMonthlyJob::dispatch($user,$filters);
         }
-        Log::info('✅ Monthly expense reports dispatched to ' . count($users) . ' users.');
+        Log::info('Monthly expense reports dispatched to ' . count($users) . ' users.');
     } catch (\Throwable $e) {
-        Log::error('❌ Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        Log::error('Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
     }
-})->timezone('Asia/Karachi')->monthlyOn(2, '11:00'); // <-- Adjust the day as needed
+})->timezone('Asia/Karachi')->monthlyOn(2, '11:00');
 
-// Every minute heartbeat
 Schedule::call(function () {
     try {
-        Log::info('✅ Scheduler is working at ' . now()->timezone('Asia/Karachi'));
+        Log::info('Scheduler is working at ' . now()->timezone('Asia/Karachi'));
     } catch (\Throwable $e) {
-        Log::error('❌ Error logging scheduler heartbeat: ' . $e->getMessage());
+        Log::error('Error logging scheduler heartbeat: ' . $e->getMessage());
     }
 })->timezone('Asia/Karachi')->everyMinute();
