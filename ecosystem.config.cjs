@@ -3,8 +3,8 @@ module.exports = {
       {
         name: 'scheduler',
         script: 'artisan',
-        args: 'schedule:run',
-        interpreter: '/usr/bin/php', // Change if PHP is elsewhere (e.g., /opt/alt/php80/usr/bin/php)
+        args: 'schedule:work',
+        interpreter: '/usr/bin/php', // or just 'php' if available globally
         cwd: '/home/u666385413/public_html/expense_tracker',
         watch: false,
         autorestart: true,
