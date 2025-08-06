@@ -24,9 +24,10 @@ Schedule::call(function () {
             'debtFilter' => 'all',
         ];
         foreach ($users as $user) {
+            Log::info('Dispatching job for user: ' . $user->id);
             SendExpenseReportMonthlyJob::dispatch($user,$filters);
         }
-        Log::info(`current start date $start and end date $end`);
+        Log::info("Current start date {$start} and end date {$end}");
         Log::info('Monthly expense reports dispatched to ' . count($users) . ' users.');
     } catch (\Throwable $e) {
         Log::error('Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
