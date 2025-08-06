@@ -55,6 +55,7 @@ class SendExpenseReportMonthlyJob implements ShouldQueue
             ];
         })->filter()->toArray();
         $netBalances = [];
+        logger('Scheduler is working at ' . now()->timezone('Asia/Karachi'));
         logger($report['net_balances']);
         foreach ($report['net_balances']->toArray() ?? [] as $person => $balance) {
             if (!isset($netBalances[$person])) {

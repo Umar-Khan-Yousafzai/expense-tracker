@@ -24,6 +24,7 @@ Schedule::call(function () {
         foreach ($users as $user) {
             SendExpenseReportMonthlyJob::dispatch($user,$filters);
         }
+        logger(`current start date $start and end date $end`);
         Log::info('Monthly expense reports dispatched to ' . count($users) . ' users.');
     } catch (\Throwable $e) {
         Log::error('Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
