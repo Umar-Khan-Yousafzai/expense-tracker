@@ -10,10 +10,12 @@ Schedule::call(function () {
     try {
         Log::info('📤 Starting monthly expense report dispatch...');
         $users = User::all();
+        Log::info('Found ' . count($users) . ' users to send reports to.');
         $tz = 'Asia/Karachi';
         $start = Carbon::now($tz)->subMonth()->startOfMonth()->startOfDay()->toDateTimeString();
         $end = Carbon::now($tz)->subMonth()->endOfMonth()->endOfDay()->toDateTimeString();
 
+        Log::info(Carbon::now()->toDateTimeString());
         $filters = [
             'period' => 'last_month',
             'start_date' => $start,
