@@ -18,10 +18,7 @@ class EmailController extends Controller
             'status' => $request->input('status', 'all'),
             'debtFilter' => $request->input('debtFilter', 'all'),
         ];
-
-
         SendExpenseReportMonthlyJob::dispatch($user, $filters);
-
         return redirect()->back()->with('success', 'Expense report email sent!');
     }
 }

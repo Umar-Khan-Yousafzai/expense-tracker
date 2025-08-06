@@ -2,9 +2,6 @@
 
 use App\Jobs\SendExpenseReportMonthlyJob;
 use App\Models\User;
-use Illuminate\Foundation\Inspiring;
-use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schedule;
 use Carbon\Carbon;
@@ -31,7 +28,7 @@ Schedule::call(function () {
     } catch (\Throwable $e) {
         Log::error('Error dispatching monthly reports: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
     }
-})->timezone('Asia/Karachi')->monthlyOn(2, '11:00');
+})->timezone('Asia/Karachi')->everyFiveMinutes();
 
 Schedule::call(function () {
     try {

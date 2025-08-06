@@ -79,7 +79,7 @@ class SendExpenseReportMonthlyJob implements ShouldQueue
             logger()->info('Email sent successfully to: ' . $this->user->email);
         } catch (\Exception $e) {
             logger()->error('Failed to send email to: ' . $this->user->email, ['error' => $e->getMessage()]);
-            throw $e; // Ensure failure is logged to failed_jobs table
+            throw $e;
         }
     }
 }
