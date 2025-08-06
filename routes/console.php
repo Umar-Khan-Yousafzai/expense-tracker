@@ -30,10 +30,10 @@ Schedule::call(function () {
     }
 })->timezone('Asia/Karachi')->everyFiveMinutes();
 
-Schedule::call(function () {
-    try {
-        Log::info('Scheduler is working at ' . now()->timezone('Asia/Karachi'));
-    } catch (\Throwable $e) {
-        Log::error('Error logging scheduler heartbeat: ' . $e->getMessage());
-    }
-})->timezone('Asia/Karachi')->everyMinute();
+// Schedule::call(function () {
+//     try {
+//         Log::info('Scheduler is working at ' . now()->timezone('Asia/Karachi'));
+//     } catch (\Throwable $e) {
+//         Log::error('Error logging scheduler heartbeat: ' . $e->getMessage());
+//     }
+// })->timezone('Asia/Karachi')->everyMinute();
