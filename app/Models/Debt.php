@@ -122,12 +122,13 @@ class Debt extends Model
     }
 
 
-    public function scopeFilterByStatus($query, string $status)
+    public function scopeFilterByStatus($query, $status)
     {
-        if ($status === 'all') return $query;
-
-        return $status === 'settled'
-            ? $query->settled()
-            : $query->unsettled();
+        if ($status === 'settled') {
+            return $query->where('is_settled', true);
+        } elseif ($status === 'unsettled') {
+            return $query->where('is_settled', false);
+        }
+        return $query; // 'all' returns both settled and unsettled
     }
 }//end class

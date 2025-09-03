@@ -15,6 +15,7 @@ class ReportService
         $data = [
             'period'               => $this->getPeriodDescription($filters),
             'summary'              => $this->getSummary($user, $filters),
+            'user_expense_summary' => $this->getUserExpenseSummary($user, $filters),
             'daily_expenses'       => $this->getDailyExpenses($user, $filters),
             'debts_owed'           => $this->getDebtsOwed($user, $filters),
             'debts_receivable'     => $this->getDebtsReceivable($user, $filters),
@@ -22,7 +23,7 @@ class ReportService
             'category_breakdown'   => $this->getCategoryBreakdown($user, $filters),
             'net_balances' => $this->getNetBalances($user, $filters),
         ];
-        // dd($data);s
+ 
         return $data;
     } //end generate()
 
@@ -101,32 +102,35 @@ class ReportService
     // In App\Services\ReportService.php
 
     public function getNetBalances(User $user, array $filters): Collection
-    {
-        $owed = $this->getDebtsOwed($user, $filters);
-        $receivable = $this->getDebtsReceivable($user, $filters);
+{
+    $owed = $this->getDebtsOwed($user, $filters);
+    $receivable = $this->getDebtsReceivable($user, $filters);
 
-        // Combine all people you have transactions with
-        $people = collect([])
-            ->merge($owed->keys())
-            ->merge($receivable->keys())
-            ->unique()
-            ->sort();
+    // Combine all people you have transactions with
+    $people = collect([])
+        ->merge($owed->keys())
+        ->merge($receivable->keys())
+        ->unique()
+        ->sort();
 
-        return $people->mapWithKeys(function ($person) use ($owed, $receivable) {
-            $totalOwed = $owed->has($person) ? $owed[$person]->sum('amount') : 0;
-            $totalReceivable = $receivable->has($person) ? $receivable[$person]->sum('amount') : 0;
-            $netBalance = $totalReceivable - $totalOwed;
+    return $people->mapWithKeys(function ($person) use ($owed, $receivable) {
+        $totalOwed = $owed->has($person) ? $owed[$person]->where('is_settled', false)->sum('amount') : 0;
+        $totalReceivable = $receivable->has($person) ? $receivable[$person]->where('is_settled', false)->sum('amount') : 0;
+        $netBalance = $totalReceivable - $totalOwed;
 
-            return [
-                $person => [
-                    'you_owe' => $totalOwed,
-                    'owes_you' => $totalReceivable,
-                    'net_balance' => $netBalance,
-                    'is_positive' => $netBalance >= 0
-                ]
-            ];
-        })->sortByDesc('net_balance');
-    }
+        return [
+            $person => [
+                'you_owe' => $totalOwed,
+                'owes_you' => $totalReceivable,
+                'net_balance' => $netBalance,
+                'is_positive' => $netBalance >= 0
+            ]
+        ];
+    })->filter(function ($balance) {
+        // Only include people with non-zero net balances
+        return abs($balance['net_balance']) > 0.01; // Use small threshold to account for float precision
+    })->sortByDesc('net_balance');
+}
 
     // Then add this to the generate() method:
 
@@ -164,6 +168,17 @@ class ReportService
         });
     } //end getTotalSpent()
 
+    private function getUserExpenseSummary(User $user, array $filters)
+    {
+        return Expense::whereHas('payers', function($query) use ($user) {
+            $query->where('users.id', $user->id);
+        })
+        ->with(['payers' => function($query) use ($user) {
+            $query->where('users.id', $user->id);
+        }])
+        ->filterByDate($filters)
+        ->get();
+    } //end getTotalSpent()
 
     private function getTotalOwed(User $user, array $filters): float
     {

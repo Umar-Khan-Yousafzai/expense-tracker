@@ -1,6 +1,6 @@
 <x-modal title="Debt Details" class="backdrop-blur" wire:model.defer="expense">
     @if($expense)
-        <x-list>
+        {{-- <x-list> --}}
             @forelse($expense->unsettledDebts as $debt)
                 <x-list-item :item="$debt">
                     <x-slot:value>
@@ -18,6 +18,6 @@
                     All debts settled!
                 </x-alert>
             @endforelse
-        </x-list>
+        {{-- </x-list> --}}
     @endif
 </x-modal>

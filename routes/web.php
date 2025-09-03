@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmailController;
 use App\Livewire\AddExpense;
 use App\Livewire\EditExpense;
 use App\Livewire\ExpenseReport;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('auth')->group(function () {
+    Route::post('/send-expense-report', [EmailController::class, 'sendExpenseReport'])->name('send.expense.report');
     Route::get('/', Welcome::class)->name('dashboard');
     Route::get('/expenses/add-expenses', AddExpense::class)->name('add.expense');
     Route::get('/expenses/{expense}/edit', EditExpense::class)->name('edit.expense');

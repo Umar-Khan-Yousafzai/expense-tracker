@@ -16,6 +16,34 @@ class ViewExpenses extends Component
     use WithPagination, Toast;
 
     /**
+     * Search term for filtering expenses
+     *
+     * @var string
+     */
+    public $search = '';
+
+    /**
+     * Status filter for expenses
+     *
+     * @var string
+     */
+    public $statusFilter = '';
+
+    /**
+     * Selected expenses for bulk operations
+     *
+     * @var array
+     */
+    public $selectedExpenses = [];
+
+    /**
+     * Select all checkbox state
+     *
+     * @var bool
+     */
+    public $selectAll = false;
+
+    /**
      * The showModal flag.
      *
      * @var boolean
@@ -52,59 +80,6 @@ class ViewExpenses extends Component
 
 
     /**
-     * The sortBy for the table.
-     *
-     * @var array
-     */
-    public array $sortBy = ['column' => '#', 'direction' => 'asc'];
-
-    /**
-     * The headers for the table.
-     *
-     * @var array
-     */
-    public $headers = [
-        [
-            'key'   => 'id',
-            'label' => '#',
-            'class' => 'w-1',
-
-        ],
-        [
-            'key'   => 'paid_at',
-            'label' => 'date',
-            'class' => 'w-1',
-        ],
-        [
-            'key'   => 'description',
-            'label' => 'Description',
-        ],
-        [
-            'key'   => 'total_amount',
-            'label' => 'Amount (RS)',
-        ],
-        [
-            'key'   => 'payers',
-            'label' => 'Paid By',
-            'class' => 'w-48',
-        ],
-        [
-            'key'   => 'participants',
-            'label' => 'Shared With',
-            'class' => 'w-48',
-        ],
-        [
-            'key'   => 'debts',
-            'label' => 'Debts',
-            'class' => 'w-32',
-        ],
-        [
-            'key'   => 'actions',
-            'label' => 'Actions',
-        ],
-    ];
-
-
     /**
      * The boot function
      *
@@ -116,6 +91,99 @@ class ViewExpenses extends Component
     {
         $this->expenseService = $expenseService;
     }//end boot()
+
+    /**
+     * Reset pagination when search changes
+     */
+    public function updatedSearch()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Reset pagination when status filter changes
+     */
+    public function updatedStatusFilter()
+    {
+        $this->resetPage();
+    }
+
+    /**
+     * Handle select all checkbox
+     */
+    public function updatedSelectAll($value)
+    {
+        if ($value) {
+            $this->selectedExpenses = $this->getFilteredExpenses()->pluck('id')->toArray();
+        } else {
+            $this->selectedExpenses = [];
+        }
+    }
+
+    /**
+     * Get filtered expenses for current page
+     */
+    private function getFilteredExpenses()
+    {
+        $userId = auth()->id();
+        
+        $query = Expense::with([
+                'expenseCategory',
+                'payers' => function ($query) {
+                    $query->withPivot('amount_paid', 'amount');
+                },
+                'participants' => function ($query) {
+                    $query->withPivot('amount');
+                },
+                'unsettledDebts.lender',
+                'unsettledDebts.borrower'
+            ])
+            ->whereHas('payers', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            })
+            ->orWhereHas('participants', function ($query) use ($userId) {
+                $query->where('users.id', $userId);
+            });
+
+        // Apply search filter
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('description', 'like', '%' . $this->search . '%')
+                  ->orWhereHas('expenseCategory', function ($categoryQuery) {
+                      $categoryQuery->where('name', 'like', '%' . $this->search . '%');
+                  });
+            });
+        }
+
+        // Apply status filter
+        if ($this->statusFilter === 'settled') {
+            $query->whereDoesntHave('unsettledDebts');
+        } elseif ($this->statusFilter === 'unsettled') {
+            $query->whereHas('unsettledDebts');
+        }
+
+        return $query->latest();
+    }
+
+    /**
+     * Bulk settle selected expenses
+     */
+    public function bulkSettle()
+    {
+        if (empty($this->selectedExpenses)) {
+            $this->error('No expenses selected for settlement.');
+            return;
+        }
+
+        // For now, just show a success message
+        // In the future, this would integrate with the settlement service
+        $count = count($this->selectedExpenses);
+        $this->success("Bulk settlement initiated for {$count} expense(s). This feature will be implemented soon!");
+        
+        // Clear selections
+        $this->selectedExpenses = [];
+        $this->selectAll = false;
+    }
 
 
       /**
@@ -135,9 +203,10 @@ class ViewExpenses extends Component
      */
     public function render()
     {
+        $expenses = $this->getFilteredExpenses()->paginate(10);
+        
         return view('livewire.view-expenses', [
-            'headers'  => $this->headers,
-            'expenses' => $this->expenseService->getAllExpensesWithParticipants(),
+            'expenses' => $expenses,
         ]);
     }//end render()
 
